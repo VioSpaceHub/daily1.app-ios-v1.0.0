@@ -541,7 +541,26 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
             </div>
             
             {/* Ramadan Mode Toggle */}
-            <div className="ramadan-toggle" data-testid="ramadan-toggle">
+            <div className="header-actions" data-testid="header-actions">
+              {/* Notification Toggle */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button 
+                    className={`notification-btn ${notificationsEnabled ? 'active' : ''}`}
+                    onClick={toggleNotifications}
+                    data-testid="notification-toggle"
+                  >
+                    {notificationsEnabled ? <Bell size={16} /> : <BellOff size={16} />}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent className="tooltip-content">
+                  {notificationsEnabled 
+                    ? "Benachrichtigungen deaktivieren" 
+                    : "Tägliche Erinnerung aktivieren"}
+                </TooltipContent>
+              </Tooltip>
+
+              {/* Ramadan Toggle */}
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex items-center gap-2">
