@@ -216,6 +216,19 @@ def main():
     # Test invalid index (should still return deed)
     tester.test_get_deed_by_index(999)
     
+    # Test Firebase notification endpoints
+    print("\n🔔 Testing Firebase Push Notification Endpoints...")
+    
+    # Register token first
+    success, response = tester.test_register_fcm_token()
+    
+    # Test sending notifications (expected to fail without Firebase setup)
+    tester.test_send_test_notification()
+    tester.test_send_daily_notifications()
+    
+    # Unregister token
+    tester.test_unregister_fcm_token()
+    
     # Print final results
     print("\n" + "=" * 50)
     print(f"📊 Test Results:")
