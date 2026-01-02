@@ -520,74 +520,53 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
             </div>
           </div>
           
-          {/* Historie / Kalender */}
-          <section className="mt-8 fade-in" style={{ animationDelay: '0.2s' }} data-testid="history-section">
-            <div className="section-header">
-              <Calendar size={16} />
-              <span>Deine Historie</span>
-            </div>
-            
-            {/* Monatsnavigation */}
-            <div className="flex items-center justify-between mb-4">
-              <button
-                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
-                className="text-[#52525B] hover:text-[#A1A1AA] transition-colors p-1"
-                aria-label="Vorheriger Monat"
-                data-testid="prev-month-btn"
-              >
-                ←
+          {/* Teilen Button */}
+          <div className="share-section fade-in" style={{ animationDelay: '0.15s' }} data-testid="share-section">
+            <button
+              className={`share-btn ${isRamadanActive ? 'ramadan-share' : ''}`}
+              onClick={handleShare}
+              data-testid="share-button"
+            >
+              <Share2 size={16} />
+              <span>Teilen (mit guter Absicht)</span>
+            </button>
+            <p className="share-hint">Möchtest du jemanden sanft an diese Tat erinnern?</p>
+          </div>
+          
+          {/* Historie - Letzte 10 Tage */}
+          <Collapsible
+            open={historyOpen}
+            onOpenChange={setHistoryOpen}
+            className="history-collapsible fade-in"
+            style={{ animationDelay: '0.2s' }}
+          >
+            <CollapsibleTrigger asChild>
+              <button className="history-trigger" data-testid="history-trigger">
+                <span className="history-trigger-text">Letzte 10 Tage</span>
+                {historyOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </button>
-              <span className="text-sm text-[#A1A1AA] font-medium" data-testid="current-month">
-                {formatMonth(currentMonth)}
-              </span>
-              <button
-                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
-                className="text-[#52525B] hover:text-[#A1A1AA] transition-colors p-1"
-                aria-label="Nächster Monat"
-                data-testid="next-month-btn"
-              >
-                →
-              </button>
-            </div>
-            
-            {/* Wochentage Header */}
-            <div className="history-grid mb-1">
-              {weekdays.map((day) => (
-                <div key={day} className="weekday-header">
-                  {day}
-                </div>
-              ))}
-            </div>
-            
-            {/* Kalender Grid */}
-            <div className="history-grid" data-testid="calendar-grid">
-              {generateCalendarDays().map((day, index) => (
-                day.day ? (
-                  <Tooltip key={index}>
-                    <TooltipTrigger asChild>
-                      <div
-                        className={`history-day ${day.isCompleted ? 'completed' : ''} ${day.isToday ? 'today' : ''} ${day.isFuture ? 'future' : ''}`}
-                        data-testid={`calendar-day-${day.date}`}
-                        data-status={day.isCompleted ? 'done' : 'pending'}
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent className="tooltip-content max-w-[200px]">
-                      <p className="font-semibold mb-1">{day.day}. {currentMonth.toLocaleDateString('de-DE', { month: 'long' })}</p>
-                      <p className="text-xs text-[#A1A1AA]">{day.deed}</p>
-                      <p className="text-[10px] text-[#52525B] mt-0.5 italic">— {day.deedSource}</p>
-                      {day.isCompleted && (
-                        <p className="text-xs text-[#2DD4BF] mt-1 flex items-center gap-1">
-                          <Check size={12} /> Erledigt
-                        </p>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="history-content">
+              <div className="history-list" data-testid="history-list">
+                {getLast10Days().map((day, index) => (
+                  <div 
+                    key={day.date} 
+                    className={`history-item ${day.isToday ? 'today' : ''}`}
+                    data-testid={`history-item-${day.date}`}
+                  >
+                    <span className="history-date">{day.formattedDate}</span>
+                    <div className={`history-status ${day.isCompleted ? 'completed' : 'missed'}`}>
+                      {day.isCompleted ? (
+                        <CheckCircle2 size={18} className="status-icon completed" />
+                      ) : (
+                        <XCircle size={18} className="status-icon missed" />
                       )}
-                    </TooltipContent>
-                  </Tooltip>
-                ) : (
-                  <div key={index} className="history-day" style={{ opacity: 0 }} />
-                )
-              ))}
-            </div>
-          </section>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
           
           {/* Motivations-Footer */}
           <footer className="mt-auto pt-8 text-center" data-testid="footer">
