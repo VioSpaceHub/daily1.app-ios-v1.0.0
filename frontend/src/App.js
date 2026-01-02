@@ -225,6 +225,10 @@ function App() {
   const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [ramadanMode, setRamadanMode] = useState(false);
   const [manualRamadanMode, setManualRamadanMode] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [fcmToken, setFcmToken] = useState(null);
+
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const today = getAppDay();
   
