@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException, BackgroundTasks
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -6,12 +6,20 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List
+from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
+import firebase_admin
+from firebase_admin import credentials, messaging
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Firebase Admin SDK initialization
+firebase_cred_path = ROOT_DIR / 'firebase-admin.json'
+if firebase_cred_path.exists() and not firebase_admin._apps:
+    cred = credentials.Certificate(str(firebase_cred_path))
+    firebase_admin.initialize_app(cred)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
