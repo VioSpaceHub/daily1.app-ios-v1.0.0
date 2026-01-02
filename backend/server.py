@@ -134,6 +134,7 @@ class GoodDeed(BaseModel):
     model_config = ConfigDict(extra="ignore")
     index: int
     text: str
+    source: str
 
 
 class DeedCompletion(BaseModel):
@@ -158,7 +159,7 @@ async def root():
 @api_router.get("/deeds", response_model=List[GoodDeed])
 async def get_all_deeds():
     """Gibt alle verfügbaren guten Taten zurück."""
-    return [GoodDeed(index=i, text=deed) for i, deed in enumerate(GOOD_DEEDS)]
+    return [GoodDeed(index=i, text=deed["text"], source=deed["source"]) for i, deed in enumerate(GOOD_DEEDS)]
 
 
 @api_router.get("/deed/today", response_model=GoodDeed)
@@ -173,15 +174,18 @@ async def get_today_deed():
         hash_value = hash_value & 0xFFFFFFFF
     
     index = abs(hash_value) % len(GOOD_DEEDS)
-    return GoodDeed(index=index, text=GOOD_DEEDS[index])
+    deed = GOOD_DEEDS[index]
+    return GoodDeed(index=index, text=deed["text"], source=deed["source"])
 
 
 @api_router.get("/deed/{index}", response_model=GoodDeed)
 async def get_deed_by_index(index: int):
     """Gibt eine bestimmte gute Tat zurück."""
     if 0 <= index < len(GOOD_DEEDS):
-        return GoodDeed(index=index, text=GOOD_DEEDS[index])
-    return GoodDeed(index=0, text=GOOD_DEEDS[0])
+        deed = GOOD_DEEDS[index]
+        return GoodDeed(index=index, text=deed["text"], source=deed["source"])
+    deed = GOOD_DEEDS[0]
+    return GoodDeed(index=0, text=deed["text"], source=deed["source"])
 
 
 # Include the router in the main app
