@@ -328,6 +328,138 @@
     opacity: 0.7;
 }
 
+/* Share Section */
+.share-section {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: transparent;
+    border: 1px solid rgba(45, 212, 191, 0.3);
+    color: #2DD4BF;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.share-btn:hover {
+    background-color: rgba(45, 212, 191, 0.1);
+    border-color: rgba(45, 212, 191, 0.5);
+    transform: scale(1.02);
+}
+
+.share-btn.ramadan-share {
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #F59E0B;
+}
+
+.share-btn.ramadan-share:hover {
+    background-color: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.5);
+}
+
+.share-hint {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    color: #52525B;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+/* History Collapsible */
+.history-collapsible {
+    margin-top: 2rem;
+}
+
+.history-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #121212;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    color: #A1A1AA;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.history-trigger:hover {
+    background-color: #1E1E1E;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.history-trigger-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.history-content {
+    margin-top: 0.5rem;
+}
+
+.history-list {
+    background-color: #121212;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.2s ease;
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.history-item.today {
+    background-color: rgba(45, 212, 191, 0.05);
+}
+
+.history-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: #A1A1AA;
+}
+
+.history-item.today .history-date {
+    color: #2DD4BF;
+    font-weight: 500;
+}
+
+.history-status {
+    display: flex;
+    align-items: center;
+}
+
+.status-icon.completed {
+    color: #34D399;
+}
+
+.status-icon.missed {
+    color: #EF4444;
+    opacity: 0.7;
+}
+
 .tooltip-content {
     font-family: 'Inter', sans-serif;
     font-size: 0.75rem;
