@@ -144,6 +144,52 @@ class GoodDeedAPITester:
             
         return success, response
 
+    def test_register_fcm_token(self):
+        """Test FCM token registration"""
+        success, response = self.run_test(
+            "Register FCM Token (/api/notifications/register)",
+            "POST",
+            "api/notifications/register",
+            200,
+            ["success", "message"],
+            data={
+                "token": self.test_token,
+                "device_id": "test_device_123",
+                "platform": "web"
+            }
+        )
+        return success, response
+
+    def test_unregister_fcm_token(self):
+        """Test FCM token unregistration"""
+        return self.run_test(
+            "Unregister FCM Token (/api/notifications/unregister)",
+            "DELETE",
+            f"api/notifications/unregister/{self.test_token}",
+            200,
+            ["success", "message"]
+        )
+
+    def test_send_test_notification(self):
+        """Test sending test notification"""
+        return self.run_test(
+            "Send Test Notification (/api/notifications/send-test)",
+            "POST",
+            "api/notifications/send-test",
+            500,  # Expected to fail without valid Firebase setup
+            params={"token": self.test_token}
+        )
+
+    def test_send_daily_notifications(self):
+        """Test sending daily notifications"""
+        return self.run_test(
+            "Send Daily Notifications (/api/notifications/send-daily)",
+            "POST", 
+            "api/notifications/send-daily",
+            200,
+            ["success"]
+        )
+
 def main():
     print("🚀 Starting Good Deed API Tests")
     print("=" * 50)
