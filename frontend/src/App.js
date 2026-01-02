@@ -282,6 +282,100 @@ function App() {
     setRamadanMode(isRamadanPeriod());
   }, []);
 
+  // Firebase Push Notifications Setup
+  useEffect(() => {
+    const setupNotifications = async () => {
+      // Check if notifications are already enabled
+      const savedToken = localStorage.getItem('goodDeeds_fcmToken');
+      if (savedToken) {
+        setFcmToken(savedToken);
+        setNotificationsEnabled(true);
+      }
+
+      // Register service worker
+      await registerServiceWorker();
+
+      // Listen for foreground messages
+      try {
+        onForegroundMessage((payload) => {
+          toast(payload.notification?.title || 'OneSmallThing', {
+            description: payload.notification?.body,
+            duration: 5000,
+          });
+        });
+      } catch (error) {
+        console.log('Foreground messaging not available');
+      }
+    };
+
+    setupNotifications();
+  }, []);
+
+  // Toggle Push Notifications
+  const toggleNotifications = async () => {
+    if (notificationsEnabled) {
+      // Disable notifications
+      if (fcmToken) {
+        try {
+          await fetch(`${BACKEND_URL}/api/notifications/unregister/${fcmToken}`, {
+            method: 'DELETE',
+          });
+        } catch (error) {
+          console.error('Error unregistering token:', error);
+        }
+      }
+      localStorage.removeItem('goodDeeds_fcmToken');
+      setFcmToken(null);
+      setNotificationsEnabled(false);
+      toast("Benachrichtigungen deaktiviert", {
+        description: "Du erhältst keine Push-Nachrichten mehr.",
+        duration: 3000,
+      });
+    } else {
+      // Enable notifications
+      const token = await requestNotificationPermission();
+      if (token) {
+        // Register token on backend
+        try {
+          await fetch(`${BACKEND_URL}/api/notifications/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, platform: 'web' }),
+          });
+          
+          localStorage.setItem('goodDeeds_fcmToken', token);
+          setFcmToken(token);
+          setNotificationsEnabled(true);
+          
+          toast.success("Benachrichtigungen aktiviert!", {
+            description: "Du erhältst täglich eine Erinnerung an deine gute Tat.",
+            duration: 4000,
+          });
+
+          // Send test notification
+          try {
+            await fetch(`${BACKEND_URL}/api/notifications/send-test?token=${token}`, {
+              method: 'POST',
+            });
+          } catch (e) {
+            console.log('Test notification skipped');
+          }
+        } catch (error) {
+          console.error('Error registering token:', error);
+          toast.error("Fehler beim Aktivieren", {
+            description: "Bitte versuche es erneut.",
+            duration: 3000,
+          });
+        }
+      } else {
+        toast.error("Berechtigung verweigert", {
+          description: "Bitte erlaube Benachrichtigungen in den Browser-Einstellungen.",
+          duration: 4000,
+        });
+      }
+    }
+  };
+
   // Laden der gespeicherten Daten
   useEffect(() => {
     const saved = localStorage.getItem('goodDeeds_completed');
