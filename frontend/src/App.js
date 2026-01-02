@@ -335,43 +335,73 @@ function App() {
     });
   }, [completedDates, today, todayCompleted, isRamadanActive]);
 
-  // Kalender-Tage für den aktuellen Monat generieren
-  const generateCalendarDays = useCallback(() => {
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
-    
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    
+  // Letzte 10 Tage generieren
+  const getLast10Days = useCallback(() => {
     const days = [];
+    const now = new Date();
     
-    let startDay = firstDay.getDay() - 1;
-    if (startDay < 0) startDay = 6;
-    
-    for (let i = 0; i < startDay; i++) {
-      days.push({ day: null, date: null });
-    }
-    
-    for (let d = 1; d <= lastDay.getDate(); d++) {
-      const date = new Date(year, month, d);
+    for (let i = 0; i < 10; i++) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
       const dateString = date.toISOString().split('T')[0];
-      const isToday = dateString === today;
-      const isFuture = date > new Date();
       const isCompleted = completedDates.includes(dateString);
+      const isToday = dateString === today;
       
       days.push({
-        day: d,
         date: dateString,
-        isToday,
-        isFuture,
         isCompleted,
-        deed: GOOD_DEEDS[getDeedIndexForDate(date)].text,
-        deedSource: GOOD_DEEDS[getDeedIndexForDate(date)].source
+        isToday,
+        formattedDate: date.toLocaleDateString('de-DE', { 
+          weekday: 'short', 
+          day: 'numeric', 
+          month: 'short' 
+        })
       });
     }
     
     return days;
-  }, [currentMonth, today, completedDates]);
+  }, [completedDates, today]);
+
+  // Teilen-Funktion (Web Share API / iOS Share Sheet)
+  const handleShare = async () => {
+    const shareText = `Heute habe ich eine kleine gute Tat aus der App „OneSmallThing" gemacht.
+Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
+
+„${currentDeed.text}"
+
+—
+
+„Wer zu einer Rechtleitung einlädt, erhält den gleichen Lohn wie derjenige, der ihr folgt, ohne dass deren Lohn gemindert wird."
+— Sahih Muslim 2674`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'OneSmallThing - Gute Tat',
+          text: shareText,
+        });
+        toast.success("Möge Allah es belohnen!", {
+          description: "Danke fürs Teilen mit guter Absicht.",
+          duration: 3000,
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Share failed:', err);
+        }
+      }
+    } else {
+      // Fallback: Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(shareText);
+        toast.success("Text kopiert!", {
+          description: "Du kannst ihn jetzt einfügen und teilen.",
+          duration: 3000,
+        });
+      } catch (err) {
+        console.error('Copy failed:', err);
+      }
+    }
+  };
 
   // Statistiken berechnen
   const totalCompleted = completedDates.length;
