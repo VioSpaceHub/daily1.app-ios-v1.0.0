@@ -221,7 +221,7 @@ function App() {
   const [completedDates, setCompletedDates] = useState([]);
   const [todayCompleted, setTodayCompleted] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [ramadanMode, setRamadanMode] = useState(false);
   const [manualRamadanMode, setManualRamadanMode] = useState(false);
