@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import "@/App.css";
-import { Check, Moon, Clock, Share2, ChevronDown, ChevronUp, CheckCircle2, XCircle } from "lucide-react";
+import { Check, Moon, Clock, Share2, ChevronDown, ChevronUp, CheckCircle2, XCircle, Bell, BellOff } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -14,6 +14,11 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Toaster, toast } from "sonner";
+import { 
+  requestNotificationPermission, 
+  registerServiceWorker, 
+  onForegroundMessage 
+} from "@/lib/firebase";
 
 // Vordefinierte Liste an guten Taten (aus JSON) mit Quellenangabe
 const GOOD_DEEDS = [
