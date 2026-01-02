@@ -9,13 +9,108 @@ import {
 } from "@/components/ui/tooltip";
 import { Toaster, toast } from "sonner";
 
-// Vordefinierte Liste an guten Taten (aus JSON)
+// Vordefinierte Liste an guten Taten (aus JSON) mit Quellenangabe
 const GOOD_DEEDS = [
-  "Lächle einer Person mit der Absicht, ihr Gutes zu tun.",
-  "Begrüße heute bewusst jemanden mit Salam.",
-  "Sprich dreimal Subhanallah mit Bedacht.",
-  "Sage bewusst Alhamdulillah für etwas Kleines.",
-  "Reagiere heute geduldig statt impulsiv.",
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
+  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
+  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
+  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
+  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
+  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
 ];
 
 // Funktion um basierend auf dem Datum den Index der Tat zu bestimmen
@@ -56,6 +151,8 @@ function App() {
   const today = getTodayString();
   const deedIndex = getDeedIndexForDate(new Date());
   const todayDeed = GOOD_DEEDS[deedIndex];
+  const todayDeedText = todayDeed.text;
+  const todayDeedSource = todayDeed.source;
 
   // Laden der gespeicherten Daten
   useEffect(() => {
@@ -117,7 +214,8 @@ function App() {
         isToday,
         isFuture,
         isCompleted,
-        deed: GOOD_DEEDS[getDeedIndexForDate(date)]
+        deed: GOOD_DEEDS[getDeedIndexForDate(date)].text,
+        deedSource: GOOD_DEEDS[getDeedIndexForDate(date)].source
       });
     }
     
@@ -181,7 +279,11 @@ function App() {
             </div>
             
             <p className="deed-text" data-testid="deed-text">
-              {todayDeed}
+              {todayDeedText}
+            </p>
+            
+            <p className="source-reference" data-testid="source-reference">
+              — {todayDeedSource}
             </p>
             
             <button
@@ -262,6 +364,7 @@ function App() {
                     <TooltipContent className="tooltip-content max-w-[200px]">
                       <p className="font-semibold mb-1">{day.day}. {currentMonth.toLocaleDateString('de-DE', { month: 'long' })}</p>
                       <p className="text-xs text-[#A1A1AA]">{day.deed}</p>
+                      <p className="text-[10px] text-[#52525B] mt-0.5 italic">— {day.deedSource}</p>
                       {day.isCompleted && (
                         <p className="text-xs text-[#2DD4BF] mt-1 flex items-center gap-1">
                           <Check size={12} /> Erledigt
