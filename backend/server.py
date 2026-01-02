@@ -158,6 +158,19 @@ class DeedCompletionCreate(BaseModel):
     deed_index: int
 
 
+# FCM Token Model
+class FCMTokenRegister(BaseModel):
+    token: str
+    device_id: Optional[str] = None
+    platform: Optional[str] = "web"
+
+
+class NotificationSchedule(BaseModel):
+    hour: int = 6  # Default: 06:00 Uhr
+    minute: int = 0
+    enabled: bool = True
+
+
 # Routes
 @api_router.get("/")
 async def root():
