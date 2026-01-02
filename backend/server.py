@@ -209,6 +209,137 @@ async def get_deed_by_index(index: int):
     return GoodDeed(index=0, text=deed["text"], source=deed["source"])
 
 
+# ====== FCM Push Notification Routes ======
+
+@api_router.post("/notifications/register")
+async def register_fcm_token(data: FCMTokenRegister):
+    """Register FCM token for push notifications."""
+    try:
+        # Store token in MongoDB
+        await db.fcm_tokens.update_one(
+            {"token": data.token},
+            {
+                "$set": {
+                    "token": data.token,
+                    "device_id": data.device_id,
+                    "platform": data.platform,
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                    "active": True
+                }
+            },
+            upsert=True
+        )
+        return {"success": True, "message": "Token registered successfully"}
+    except Exception as e:
+        logger.error(f"Error registering FCM token: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.delete("/notifications/unregister/{token}")
+async def unregister_fcm_token(token: str):
+    """Unregister FCM token."""
+    try:
+        await db.fcm_tokens.update_one(
+            {"token": token},
+            {"$set": {"active": False}}
+        )
+        return {"success": True, "message": "Token unregistered"}
+    except Exception as e:
+        logger.error(f"Error unregistering FCM token: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/notifications/send-test")
+async def send_test_notification(token: str):
+    """Send a test notification to a specific device."""
+    try:
+        # Get today's deed
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        hash_value = 0
+        for char in today:
+            hash_value = ((hash_value << 5) - hash_value) + ord(char)
+            hash_value = hash_value & 0xFFFFFFFF
+        index = abs(hash_value) % len(GOOD_DEEDS)
+        deed = GOOD_DEEDS[index]
+        
+        message = messaging.Message(
+            notification=messaging.Notification(
+                title="🌱 Deine gute Tat für heute",
+                body=deed["text"],
+            ),
+            data={
+                "type": "daily_reminder",
+                "deed_index": str(index),
+                "source": deed["source"]
+            },
+            token=token,
+        )
+        
+        response = messaging.send(message)
+        logger.info(f"Test notification sent: {response}")
+        return {"success": True, "message_id": response}
+    except Exception as e:
+        logger.error(f"Error sending test notification: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/notifications/send-daily")
+async def send_daily_notifications(background_tasks: BackgroundTasks):
+    """Send daily reminder to all registered devices."""
+    try:
+        # Get today's deed
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        hash_value = 0
+        for char in today:
+            hash_value = ((hash_value << 5) - hash_value) + ord(char)
+            hash_value = hash_value & 0xFFFFFFFF
+        index = abs(hash_value) % len(GOOD_DEEDS)
+        deed = GOOD_DEEDS[index]
+        
+        # Get all active tokens
+        tokens_cursor = db.fcm_tokens.find({"active": True})
+        tokens = [doc["token"] async for doc in tokens_cursor]
+        
+        if not tokens:
+            return {"success": True, "sent": 0, "message": "No active tokens"}
+        
+        # Send to all tokens
+        message = messaging.MulticastMessage(
+            notification=messaging.Notification(
+                title="🌱 Deine gute Tat für heute",
+                body=deed["text"],
+            ),
+            data={
+                "type": "daily_reminder",
+                "deed_index": str(index),
+                "source": deed["source"]
+            },
+            tokens=tokens,
+        )
+        
+        response = messaging.send_each_for_multicast(message)
+        logger.info(f"Daily notifications sent: {response.success_count} success, {response.failure_count} failed")
+        
+        # Handle failed tokens
+        if response.failure_count > 0:
+            for idx, resp in enumerate(response.responses):
+                if not resp.success:
+                    failed_token = tokens[idx]
+                    await db.fcm_tokens.update_one(
+                        {"token": failed_token},
+                        {"$set": {"active": False}}
+                    )
+        
+        return {
+            "success": True,
+            "sent": response.success_count,
+            "failed": response.failure_count
+        }
+    except Exception as e:
+        logger.error(f"Error sending daily notifications: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
