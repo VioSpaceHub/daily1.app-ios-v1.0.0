@@ -229,9 +229,11 @@ function App() {
   
   // Aktuelle Tat bestimmen
   const getCurrentDeed = useCallback(() => {
-    if (isRamadanActive && ramadanDay > 0 && ramadanDay <= 30) {
-      const deed = RAMADAN_DEEDS[ramadanDay - 1];
-      return { text: deed.text, source: deed.source, isRamadan: true, day: ramadanDay };
+    if (isRamadanActive) {
+      // Im Ramadan-Modus: Ramadan-Tag verwenden oder Tag 1 als Fallback
+      const dayIndex = ramadanDay > 0 ? ramadanDay - 1 : 0;
+      const deed = RAMADAN_DEEDS[dayIndex];
+      return { text: deed.text, source: deed.source, isRamadan: true, day: ramadanDay > 0 ? ramadanDay : 1 };
     }
     const deedIndex = getDeedIndexForDate(new Date(today));
     const deed = GOOD_DEEDS[deedIndex];
