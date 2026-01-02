@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import "@/App.css";
-import { Check, Calendar, Moon, Clock } from "lucide-react";
+import { Check, Moon, Clock, Share2, ChevronDown, ChevronUp, CheckCircle2, XCircle } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -8,6 +8,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Switch } from "@/components/ui/switch";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Toaster, toast } from "sonner";
 
 // Vordefinierte Liste an guten Taten (aus JSON) mit Quellenangabe
