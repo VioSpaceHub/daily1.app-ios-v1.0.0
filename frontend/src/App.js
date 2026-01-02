@@ -439,7 +439,7 @@ function App() {
           {isRamadanActive && (
             <div className="ramadan-badge fade-in" data-testid="ramadan-badge">
               <Moon size={12} />
-              <span>Tag {ramadanDay > 0 ? ramadanDay : '–'} von 30</span>
+              <span>Tag {currentDeed.day} von 30</span>
             </div>
           )}
           
