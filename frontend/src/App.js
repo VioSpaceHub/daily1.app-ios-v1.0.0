@@ -406,8 +406,6 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
   // Statistiken berechnen
   const totalCompleted = completedDates.length;
 
-  const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-
   // Countdown formatieren
   const formatCountdown = () => {
     const pad = (n) => n.toString().padStart(2, '0');
