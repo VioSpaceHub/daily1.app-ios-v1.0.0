@@ -189,11 +189,6 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('de-DE', options);
 };
 
-// Monat formatieren
-const formatMonth = (date) => {
-  return date.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
-};
-
 // Prüfen ob aktuell Ramadan ist
 const isRamadanPeriod = () => {
   const now = new Date();
