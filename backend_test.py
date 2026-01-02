@@ -11,7 +11,7 @@ class GoodDeedAPITester:
         self.failed_tests = []
         self.test_token = "fake_fcm_token_for_testing_12345"
 
-    def run_test(self, name, method, endpoint, expected_status, expected_keys=None):
+    def run_test(self, name, method, endpoint, expected_status, expected_keys=None, data=None, params=None):
         """Run a single API test"""
         url = f"{self.base_url}/{endpoint}"
         headers = {'Content-Type': 'application/json'}
@@ -22,9 +22,11 @@ class GoodDeedAPITester:
         
         try:
             if method == 'GET':
-                response = requests.get(url, headers=headers, timeout=10)
+                response = requests.get(url, headers=headers, timeout=10, params=params)
             elif method == 'POST':
-                response = requests.post(url, headers=headers, timeout=10)
+                response = requests.post(url, headers=headers, timeout=10, json=data, params=params)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=headers, timeout=10)
 
             print(f"   Status Code: {response.status_code}")
             
