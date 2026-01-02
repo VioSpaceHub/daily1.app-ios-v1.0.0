@@ -2,8 +2,10 @@ from fastapi import FastAPI, APIRouter, HTTPException, BackgroundTasks
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+from contextlib import asynccontextmanager
 import os
 import logging
+import asyncio
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
@@ -11,6 +13,8 @@ import uuid
 from datetime import datetime, timezone
 import firebase_admin
 from firebase_admin import credentials, messaging
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -26,8 +30,91 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app
-app = FastAPI(title="Gute Tat API", description="Daily Good Deed Reminder App")
+# Scheduler for daily notifications
+scheduler = AsyncIOScheduler()
+
+# Daily notification job
+async def send_daily_notification_job():
+    """Send daily reminder notifications at 06:00."""
+    logger = logging.getLogger(__name__)
+    logger.info("Starting daily notification job...")
+    
+    try:
+        # Get today's deed
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        hash_value = 0
+        for char in today:
+            hash_value = ((hash_value << 5) - hash_value) + ord(char)
+            hash_value = hash_value & 0xFFFFFFFF
+        index = abs(hash_value) % len(GOOD_DEEDS)
+        deed = GOOD_DEEDS[index]
+        
+        # Get all active tokens
+        tokens_cursor = db.fcm_tokens.find({"active": True})
+        tokens = [doc["token"] async for doc in tokens_cursor]
+        
+        if not tokens:
+            logger.info("No active tokens for daily notification")
+            return
+        
+        # Send to all tokens
+        message = messaging.MulticastMessage(
+            notification=messaging.Notification(
+                title="🌱 Deine gute Tat für heute",
+                body=deed["text"],
+            ),
+            data={
+                "type": "daily_reminder",
+                "deed_index": str(index),
+                "source": deed["source"]
+            },
+            tokens=tokens,
+        )
+        
+        response = messaging.send_each_for_multicast(message)
+        logger.info(f"Daily notifications sent: {response.success_count} success, {response.failure_count} failed")
+        
+        # Deactivate failed tokens
+        if response.failure_count > 0:
+            for idx, resp in enumerate(response.responses):
+                if not resp.success:
+                    failed_token = tokens[idx]
+                    await db.fcm_tokens.update_one(
+                        {"token": failed_token},
+                        {"$set": {"active": False}}
+                    )
+    except Exception as e:
+        logger.error(f"Error in daily notification job: {e}")
+
+# Lifespan context manager for startup/shutdown
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    logger = logging.getLogger(__name__)
+    
+    # Schedule daily notification at 06:00 (Europe/Berlin timezone)
+    scheduler.add_job(
+        send_daily_notification_job,
+        CronTrigger(hour=6, minute=0, timezone='Europe/Berlin'),
+        id='daily_notification',
+        replace_existing=True
+    )
+    scheduler.start()
+    logger.info("Scheduler started - Daily notifications scheduled for 06:00 (Europe/Berlin)")
+    
+    yield
+    
+    # Shutdown
+    scheduler.shutdown()
+    client.close()
+    logger.info("Scheduler and database connection closed")
+
+# Create the main app with lifespan
+app = FastAPI(
+    title="Gute Tat API", 
+    description="Daily Good Deed Reminder App",
+    lifespan=lifespan
+)
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
