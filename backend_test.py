@@ -1,13 +1,15 @@
 import requests
 import sys
+import json
 from datetime import datetime
 
 class GoodDeedAPITester:
-    def __init__(self, base_url="https://kindness-reminder-1.preview.emergentagent.com"):
+    def __init__(self, base_url="https://job-kindness-reminder-1.internal.api.dev.em1.live"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
         self.failed_tests = []
+        self.test_token = "fake_fcm_token_for_testing_12345"
 
     def run_test(self, name, method, endpoint, expected_status, expected_keys=None):
         """Run a single API test"""
