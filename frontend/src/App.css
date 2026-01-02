@@ -252,6 +252,37 @@
     margin-bottom: 1.5rem;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notification-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #52525B;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.notification-btn:hover {
+    border-color: rgba(45, 212, 191, 0.3);
+    color: #A1A1AA;
+}
+
+.notification-btn.active {
+    border-color: rgba(45, 212, 191, 0.5);
+    color: #2DD4BF;
+    background-color: rgba(45, 212, 191, 0.1);
+}
+
 .ramadan-toggle {
     display: flex;
     align-items: center;
