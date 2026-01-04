@@ -1,18 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ===== Variables ===== */
+:root {
+    --bg-default: #0A0A0A;
+    --bg-surface: #141414;
+    --bg-surface-highlight: #1E1E1E;
+    --text-primary: #FAFAFA;
+    --text-secondary: #B3B3B3;
+    --text-muted: #666666;
+    --accent-primary: #34D399;
+    --accent-primary-glow: rgba(52, 211, 153, 0.4);
+    --accent-secondary: #818CF8;
+    --accent-ramadan: #F59E0B;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-medium: rgba(255, 255, 255, 0.12);
+}
+
+/* ===== Base ===== */
 .app-container {
     min-height: 100vh;
-    background-color: #050505;
+    background-color: var(--bg-default);
     position: relative;
     overflow: hidden;
 }
 
 .hero-glow {
     position: fixed;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle at center, rgba(45, 212, 191, 0.08) 0%, rgba(5, 5, 5, 0) 70%);
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle at center, rgba(52, 211, 153, 0.06) 0%, transparent 70%);
     pointer-events: none;
     z-index: 0;
 }
@@ -20,87 +39,274 @@
 .main-content {
     position: relative;
     z-index: 1;
-    max-width: 28rem;
+    max-width: 420px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 2.5rem 1.5rem 3rem;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-.daily-card {
-    background: linear-gradient(145deg, #121212 0%, #0A0A0A 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+/* ===== Header ===== */
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+}
+
+.logo-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.375rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-emoji {
+    font-size: 1.5rem;
+}
+
+.logo-icon {
+    color: var(--accent-ramadan);
+}
+
+.logo-text.ramadan-logo {
+    color: var(--accent-ramadan);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notification-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.notification-btn:hover {
+    border-color: var(--border-medium);
+    color: var(--text-secondary);
+}
+
+.notification-btn.active {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background-color: rgba(52, 211, 153, 0.1);
+}
+
+/* ===== Notification Prompt ===== */
+.notification-prompt-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 1.5rem;
+}
+
+.notification-prompt {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-medium);
     border-radius: 1.5rem;
     padding: 2.5rem 2rem;
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.prompt-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.notification-prompt h3 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.notification-prompt p {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.prompt-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.prompt-btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.875rem 1.5rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.prompt-btn.primary {
+    background: var(--accent-primary);
+    color: #000;
+    border: none;
+}
+
+.prompt-btn.primary:hover {
+    background: #2DD4BF;
+    transform: scale(1.02);
+}
+
+.prompt-btn.secondary {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-subtle);
+}
+
+.prompt-btn.secondary:hover {
+    border-color: var(--border-medium);
+    color: var(--text-secondary);
+}
+
+/* ===== Ramadan Badge ===== */
+.ramadan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent-ramadan);
+    margin-bottom: 2rem;
+}
+
+/* ===== Daily Card ===== */
+.daily-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 1.5rem;
+    padding: 2.5rem 2rem;
+    box-shadow: 
+        0 4px 24px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.03) inset;
     position: relative;
-    overflow: hidden;
 }
 
 .daily-card::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 0;
-    right: 0;
+    left: 20%;
+    right: 20%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+    opacity: 0.4;
 }
 
 .daily-card.completed {
-    border-color: rgba(45, 212, 191, 0.3);
-    box-shadow: 0 0 30px -10px rgba(45, 212, 191, 0.3);
+    border-color: rgba(52, 211, 153, 0.25);
+    box-shadow: 
+        0 4px 24px rgba(0, 0, 0, 0.3),
+        0 0 40px -10px var(--accent-primary-glow);
 }
 
-.deed-text {
-    font-family: 'Manrope', sans-serif;
-    font-weight: 600;
-    font-size: 1.5rem;
-    line-height: 1.4;
-    color: #EDEDED;
-    margin-bottom: 0.75rem;
+.daily-card.ramadan-card::before {
+    background: linear-gradient(90deg, transparent, var(--accent-ramadan), transparent);
 }
 
-.source-reference {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: #52525B;
-    font-style: italic;
-    margin-bottom: 2rem;
-    letter-spacing: 0.02em;
+.daily-card.ramadan-card.completed {
+    border-color: rgba(245, 158, 11, 0.25);
+    box-shadow: 
+        0 4px 24px rgba(0, 0, 0, 0.3),
+        0 0 40px -10px rgba(245, 158, 11, 0.3);
 }
 
 .date-display {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 0.75rem;
-    color: #52525B;
+    font-weight: 500;
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
+    margin-bottom: 1.5rem;
+}
+
+.deed-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
     margin-bottom: 1rem;
+}
+
+.deed-icon {
+    color: var(--accent-primary);
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+}
+
+.deed-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+
+.source-reference {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 2rem;
+    padding-left: 2.125rem;
 }
 
 .action-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #2DD4BF;
-    color: #050505;
-    font-family: 'Manrope', sans-serif;
-    font-weight: 700;
-    font-size: 0.875rem;
-    padding: 0.875rem 2rem;
+    background: var(--accent-primary);
+    color: #000;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 1rem 2rem;
     border-radius: 9999px;
     border: none;
     cursor: pointer;
-    box-shadow: 0 0 20px -5px rgba(45, 212, 191, 0.3);
-    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 0 24px -4px var(--accent-primary-glow);
+    transition: all 0.2s ease;
 }
 
 .action-btn:hover:not(:disabled) {
-    transform: scale(1.02);
-    background-color: #14b8a6;
-    box-shadow: 0 0 30px -5px rgba(45, 212, 191, 0.5);
+    transform: scale(1.03);
+    box-shadow: 0 0 32px -4px var(--accent-primary-glow);
 }
 
 .action-btn:active:not(:disabled) {
@@ -108,106 +314,228 @@
 }
 
 .action-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    opacity: 0.7;
+    cursor: default;
 }
 
 .action-btn.completed {
-    background-color: #34D399;
-    box-shadow: 0 0 25px -5px rgba(52, 211, 153, 0.4);
+    background: var(--accent-primary);
 }
 
-.section-header {
-    font-family: 'Manrope', sans-serif;
-    font-weight: 600;
-    font-size: 1rem;
-    color: #A1A1AA;
-    margin-bottom: 1rem;
+.action-btn.ramadan-btn {
+    background: var(--accent-ramadan);
+    box-shadow: 0 0 24px -4px rgba(245, 158, 11, 0.4);
+}
+
+.action-btn.ramadan-btn:hover:not(:disabled) {
+    box-shadow: 0 0 32px -4px rgba(245, 158, 11, 0.5);
+}
+
+.check-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+}
+
+/* ===== Badges ===== */
+.badges-container {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.badge {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-}
-
-.history-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
     gap: 0.375rem;
+    background: var(--bg-surface-highlight);
+    border: 1px solid var(--border-subtle);
+    border-radius: 9999px;
+    padding: 0.5rem 0.875rem;
 }
 
-.history-day {
-    aspect-ratio: 1;
-    border-radius: 0.375rem;
-    background-color: #1E1E1E;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
+.badge-icon {
+    font-size: 0.875rem;
 }
 
-.history-day.completed {
-    background-color: #2DD4BF;
-    box-shadow: 0 0 10px -3px rgba(45, 212, 191, 0.5);
+.badge-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
 }
 
-.history-day.today {
-    border: 2px solid rgba(45, 212, 191, 0.5);
-}
-
-.history-day.future {
-    background-color: #0A0A0A;
-    opacity: 0.3;
-}
-
-.weekday-header {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.625rem;
-    color: #52525B;
-    text-align: center;
-    padding-bottom: 0.5rem;
-}
-
+/* ===== Stats ===== */
 .stats-container {
     display: flex;
     gap: 1rem;
-    margin-top: 1.5rem;
+    margin-top: 2rem;
 }
 
 .stat-card {
     flex: 1;
-    background-color: #121212;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
     border-radius: 1rem;
-    padding: 1rem;
+    padding: 1.25rem;
+    text-align: center;
 }
 
 .stat-value {
-    font-family: 'Manrope', sans-serif;
-    font-weight: 800;
-    font-size: 1.5rem;
-    color: #2DD4BF;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--accent-primary);
 }
 
 .stat-label {
     font-family: 'Inter', sans-serif;
     font-size: 0.75rem;
-    color: #52525B;
+    font-weight: 500;
+    color: var(--text-muted);
     margin-top: 0.25rem;
 }
 
-.success-animation {
-    animation: successPulse 0.6s ease-out;
+.countdown-value {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1.375rem;
+    color: var(--accent-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
-@keyframes successPulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-    }
+.countdown-icon {
+    opacity: 0.7;
 }
 
+/* ===== Share Section ===== */
+.share-section {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--border-medium);
+    color: var(--text-secondary);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.share-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: rgba(52, 211, 153, 0.05);
+}
+
+.share-btn.ramadan-share:hover {
+    border-color: var(--accent-ramadan);
+    color: var(--accent-ramadan);
+    background: rgba(245, 158, 11, 0.05);
+}
+
+/* ===== History ===== */
+.history-collapsible {
+    margin-top: 2.5rem;
+}
+
+.history-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 1rem;
+    padding: 1.125rem 1.5rem;
+    color: var(--text-secondary);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.history-trigger:hover {
+    border-color: var(--border-medium);
+    color: var(--text-primary);
+}
+
+.history-content {
+    margin-top: 0.75rem;
+}
+
+.history-list {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background-color 0.2s ease;
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.history-item.today {
+    background: rgba(52, 211, 153, 0.05);
+}
+
+.history-date {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.history-item.today .history-date {
+    color: var(--accent-primary);
+}
+
+.status-icon.completed {
+    color: var(--accent-primary);
+}
+
+.status-icon.pending {
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+/* ===== Footer ===== */
+footer {
+    margin-top: auto;
+    padding-top: 3rem;
+    text-align: center;
+}
+
+footer p {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* ===== Animations ===== */
 .fade-in {
     animation: fadeIn 0.5s ease-out;
 }
@@ -223,281 +551,29 @@
     }
 }
 
-.check-icon {
-    width: 1.25rem;
-    height: 1.25rem;
+.success-animation {
+    animation: successPulse 0.6s ease-out;
 }
 
-.logo-text {
-    font-family: 'Manrope', sans-serif;
-    font-weight: 800;
-    font-size: 1.25rem;
-    background: linear-gradient(135deg, #2DD4BF, #818CF8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
 }
 
-.logo-text.ramadan-logo {
-    background: linear-gradient(135deg, #F59E0B, #FBBF24);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.notification-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #52525B;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.notification-btn:hover {
-    border-color: rgba(45, 212, 191, 0.3);
-    color: #A1A1AA;
-}
-
-.notification-btn.active {
-    border-color: rgba(45, 212, 191, 0.5);
-    color: #2DD4BF;
-    background-color: rgba(45, 212, 191, 0.1);
-}
-
-.ramadan-toggle {
-    display: flex;
-    align-items: center;
-}
-
-.ramadan-switch {
-    background-color: #1E1E1E;
-}
-
-.ramadan-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.1));
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    border-radius: 9999px;
-    padding: 0.375rem 0.875rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: #FBBF24;
-    margin-bottom: 1.5rem;
-}
-
-/* Ramadan Styles */
+/* ===== Ramadan Styles ===== */
 .app-container.ramadan-active .hero-glow {
-    background: radial-gradient(circle at center, rgba(245, 158, 11, 0.08) 0%, rgba(5, 5, 5, 0) 70%);
+    background: radial-gradient(circle at center, rgba(245, 158, 11, 0.06) 0%, transparent 70%);
 }
 
-.daily-card.ramadan-card {
-    border-color: rgba(245, 158, 11, 0.15);
-}
-
-.daily-card.ramadan-card::before {
-    background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.3), transparent);
-}
-
-.daily-card.ramadan-card.completed {
-    border-color: rgba(245, 158, 11, 0.3);
-    box-shadow: 0 0 30px -10px rgba(245, 158, 11, 0.3);
-}
-
-.action-btn.ramadan-btn {
-    background-color: #F59E0B;
-    box-shadow: 0 0 20px -5px rgba(245, 158, 11, 0.3);
-}
-
-.action-btn.ramadan-btn:hover:not(:disabled) {
-    background-color: #D97706;
-    box-shadow: 0 0 30px -5px rgba(245, 158, 11, 0.5);
-}
-
-.action-btn.ramadan-btn.completed {
-    background-color: #FBBF24;
-    box-shadow: 0 0 25px -5px rgba(251, 191, 36, 0.4);
-}
-
-/* Countdown Styles */
-.countdown-card {
-    position: relative;
-    overflow: hidden;
-}
-
-.countdown-value {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
-    font-size: 1.25rem;
-    color: #2DD4BF;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.countdown-icon {
-    opacity: 0.7;
-}
-
-/* Share Section */
-.share-section {
-    margin-top: 1.5rem;
-    text-align: center;
-}
-
-.share-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: transparent;
-    border: 1px solid rgba(45, 212, 191, 0.3);
-    color: #2DD4BF;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    font-size: 0.875rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 9999px;
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-}
-
-.share-btn:hover {
-    background-color: rgba(45, 212, 191, 0.1);
-    border-color: rgba(45, 212, 191, 0.5);
-    transform: scale(1.02);
-}
-
-.share-btn.ramadan-share {
-    border-color: rgba(245, 158, 11, 0.3);
-    color: #F59E0B;
-}
-
-.share-btn.ramadan-share:hover {
-    background-color: rgba(245, 158, 11, 0.1);
-    border-color: rgba(245, 158, 11, 0.5);
-}
-
-.share-hint {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.7rem;
-    color: #52525B;
-    margin-top: 0.5rem;
-    font-style: italic;
-}
-
-/* History Collapsible */
-.history-collapsible {
-    margin-top: 2rem;
-}
-
-.history-trigger {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #121212;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 1rem;
-    padding: 1rem 1.25rem;
-    color: #A1A1AA;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.history-trigger:hover {
-    background-color: #1E1E1E;
-    border-color: rgba(255, 255, 255, 0.12);
-}
-
-.history-trigger-text {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.history-content {
-    margin-top: 0.5rem;
-}
-
-.history-list {
-    background-color: #121212;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 1rem;
-    overflow: hidden;
-}
-
-.history-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.875rem 1.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    transition: background-color 0.2s ease;
-}
-
-.history-item:last-child {
-    border-bottom: none;
-}
-
-.history-item.today {
-    background-color: rgba(45, 212, 191, 0.05);
-}
-
-.history-date {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    color: #A1A1AA;
-}
-
-.history-item.today .history-date {
-    color: #2DD4BF;
-    font-weight: 500;
-}
-
-.history-status {
-    display: flex;
-    align-items: center;
-}
-
-.status-icon.completed {
-    color: #34D399;
-}
-
-.status-icon.missed {
-    color: #EF4444;
-    opacity: 0.7;
-}
-
+/* ===== Tooltip ===== */
 .tooltip-content {
     font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
-    background-color: #1E1E1E;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.8rem;
+    background: var(--bg-surface-highlight);
+    border: 1px solid var(--border-medium);
     border-radius: 0.5rem;
     padding: 0.5rem 0.75rem;
-    color: #EDEDED;
+    color: var(--text-primary);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
