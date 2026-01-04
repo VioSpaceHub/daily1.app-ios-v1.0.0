@@ -539,6 +539,14 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
 
   // Statistiken berechnen
   const totalCompleted = completedDates.length;
+  const badges = getBadges(totalCompleted);
+
+  // Motivierender Text für Stats
+  const getStatsLabel = () => {
+    if (totalCompleted === 0) return "Starte heute!";
+    if (totalCompleted === 1) return "Erste Tat!";
+    return "Gute Taten";
+  };
 
   // Countdown formatieren
   const formatCountdown = () => {
