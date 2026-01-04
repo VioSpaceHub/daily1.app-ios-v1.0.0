@@ -245,6 +245,7 @@ function App() {
   const [manualRamadanMode, setManualRamadanMode] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [fcmToken, setFcmToken] = useState(null);
+  const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
 
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
