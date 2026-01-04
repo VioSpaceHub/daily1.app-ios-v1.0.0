@@ -668,9 +668,12 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
               {formatDate(today)}
             </div>
             
-            <p className="deed-text" data-testid="deed-text">
-              {currentDeed.text}
-            </p>
+            <div className="deed-content">
+              {getCategoryIcon(currentDeed.text)}
+              <p className="deed-text" data-testid="deed-text">
+                {currentDeed.text}
+              </p>
+            </div>
             
             <p className="source-reference" data-testid="source-reference">
               — {currentDeed.source}
@@ -688,11 +691,23 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
             </button>
           </div>
           
+          {/* Badges */}
+          {badges.length > 0 && (
+            <div className="badges-container fade-in" data-testid="badges">
+              {badges.map((badge, index) => (
+                <div key={index} className="badge">
+                  <span className="badge-icon">{badge.icon}</span>
+                  <span className="badge-label">{badge.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          
           {/* Statistiken */}
           <div className="stats-container fade-in" style={{ animationDelay: '0.1s' }} data-testid="stats-container">
             <div className="stat-card" data-testid="stat-total">
               <div className="stat-value">{totalCompleted}</div>
-              <div className="stat-label">Gute Taten</div>
+              <div className="stat-label">{getStatsLabel()}</div>
             </div>
             <div className="stat-card countdown-card" data-testid="stat-countdown">
               <div className="countdown-value" data-testid="countdown-display">
@@ -711,9 +726,8 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
               data-testid="share-button"
             >
               <Share2 size={16} />
-              <span>Teilen (mit guter Absicht)</span>
+              <span>Teilen</span>
             </button>
-            <p className="share-hint">Möchtest du jemanden sanft an diese Tat erinnern?</p>
           </div>
           
           {/* Historie - Letzte 10 Tage */}
