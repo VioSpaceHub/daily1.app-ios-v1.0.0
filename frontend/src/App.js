@@ -571,16 +571,38 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
         />
         
         <main className="main-content">
+          {/* Notification Prompt Modal */}
+          {showNotificationPrompt && (
+            <div className="notification-prompt-overlay">
+              <div className="notification-prompt">
+                <div className="prompt-icon">🔔</div>
+                <h3>Tägliche Erinnerung</h3>
+                <p>Möchtest du jeden Morgen um 6 Uhr an deine gute Tat erinnert werden?</p>
+                <div className="prompt-buttons">
+                  <button className="prompt-btn primary" onClick={handleNotificationPromptAccept}>
+                    Ja, erinnere mich
+                  </button>
+                  <button className="prompt-btn secondary" onClick={handleNotificationPromptDismiss}>
+                    Später
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Header mit Logo und Ramadan Toggle */}
           <div className="header-row">
             <div className={`logo-text ${isRamadanActive ? 'ramadan-logo' : ''}`} data-testid="app-logo">
               {isRamadanActive ? (
                 <>
-                  <Moon size={20} className="inline-block mr-2" />
-                  Ramadan
+                  <Moon size={22} className="logo-icon" />
+                  <span>Ramadan</span>
                 </>
               ) : (
-                'Gute Tat'
+                <>
+                  <span className="logo-emoji">🌱</span>
+                  <span>Daily Deeds</span>
+                </>
               )}
             </div>
             
