@@ -306,9 +306,14 @@ function App() {
     const setupNotifications = async () => {
       // Check if notifications are already enabled
       const savedToken = localStorage.getItem('goodDeeds_fcmToken');
+      const hasSeenPrompt = localStorage.getItem('goodDeeds_notificationPromptSeen');
+      
       if (savedToken) {
         setFcmToken(savedToken);
         setNotificationsEnabled(true);
+      } else if (!hasSeenPrompt) {
+        // Show notification prompt for new users after 2 seconds
+        setTimeout(() => setShowNotificationPrompt(true), 2000);
       }
 
       // Register service worker
@@ -317,7 +322,7 @@ function App() {
       // Listen for foreground messages
       try {
         onForegroundMessage((payload) => {
-          toast(payload.notification?.title || 'OneSmallThing', {
+          toast(payload.notification?.title || 'Daily Deeds', {
             description: payload.notification?.body,
             duration: 5000,
           });
@@ -329,6 +334,18 @@ function App() {
 
     setupNotifications();
   }, []);
+
+  // Handle notification prompt
+  const handleNotificationPromptAccept = async () => {
+    setShowNotificationPrompt(false);
+    localStorage.setItem('goodDeeds_notificationPromptSeen', 'true');
+    await toggleNotifications();
+  };
+
+  const handleNotificationPromptDismiss = () => {
+    setShowNotificationPrompt(false);
+    localStorage.setItem('goodDeeds_notificationPromptSeen', 'true');
+  };
 
   // Toggle Push Notifications
   const toggleNotifications = async () => {
