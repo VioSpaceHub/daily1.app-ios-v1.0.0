@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import "@/App.css";
-import { Check, Moon, Clock, Share2, ChevronDown, ChevronUp, CheckCircle2, XCircle, Bell, BellOff } from "lucide-react";
+import { Check, Moon, Clock, Share2, ChevronDown, ChevronUp, CheckCircle2, Circle, Bell, BellOff, Award, Smile, Heart, MessageCircle, Sparkles } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -19,6 +19,24 @@ import {
   registerServiceWorker, 
   onForegroundMessage 
 } from "@/lib/firebase";
+
+// Kategorie-Icons für Taten
+const getCategoryIcon = (text) => {
+  if (text.includes("Lächle") || text.includes("freundlich")) return <Smile size={18} className="deed-icon" />;
+  if (text.includes("Salam") || text.includes("Begrüße")) return <MessageCircle size={18} className="deed-icon" />;
+  if (text.includes("Subhanallah") || text.includes("Alhamdulillah") || text.includes("Allah")) return <Sparkles size={18} className="deed-icon" />;
+  if (text.includes("geduldig") || text.includes("Vergebung")) return <Heart size={18} className="deed-icon" />;
+  return <Sparkles size={18} className="deed-icon" />;
+};
+
+// Badges für Meilensteine
+const getBadges = (totalCompleted) => {
+  const badges = [];
+  if (totalCompleted >= 7) badges.push({ icon: "🔥", label: "7 Tage", achieved: true });
+  if (totalCompleted >= 30) badges.push({ icon: "⭐", label: "30 Tage", achieved: true });
+  if (totalCompleted >= 100) badges.push({ icon: "🏆", label: "100 Taten", achieved: true });
+  return badges;
+};
 
 // Vordefinierte Liste an guten Taten (aus JSON) mit Quellenangabe
 const GOOD_DEEDS = [
