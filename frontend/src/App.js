@@ -752,11 +752,11 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
                     data-testid={`history-item-${day.date}`}
                   >
                     <span className="history-date">{day.formattedDate}</span>
-                    <div className={`history-status ${day.isCompleted ? 'completed' : 'missed'}`}>
+                    <div className={`history-status ${day.isCompleted ? 'completed' : 'pending'}`}>
                       {day.isCompleted ? (
                         <CheckCircle2 size={18} className="status-icon completed" />
                       ) : (
-                        <XCircle size={18} className="status-icon missed" />
+                        <Circle size={18} className="status-icon pending" />
                       )}
                     </div>
                   </div>
