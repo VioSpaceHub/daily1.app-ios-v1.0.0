@@ -460,5 +460,16 @@ export const languages = [
 export const dateLocales = {
   de: 'de-DE',
   en: 'en-GB',
-  bs: 'bs-BA'
+  bs: 'hr-HR' // Use Croatian as fallback (similar to Bosnian)
+};
+
+// Bosnian month names (manual fallback)
+export const bosnianMonths = {
+  long: ['januar', 'februar', 'mart', 'april', 'maj', 'juni', 'juli', 'august', 'septembar', 'oktobar', 'novembar', 'decembar'],
+  short: ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
+};
+
+export const bosnianWeekdays = {
+  long: ['nedjelja', 'ponedjeljak', 'utorak', 'srijeda', 'četvrtak', 'petak', 'subota'],
+  short: ['ned', 'pon', 'uto', 'sri', 'čet', 'pet', 'sub']
 };
