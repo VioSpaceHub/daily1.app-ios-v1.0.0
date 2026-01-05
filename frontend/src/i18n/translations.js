@@ -180,7 +180,7 @@ Maybe you'd like to do it too – may Allah accept it from us. 🌱
   
   bs: {
     // App header
-    appName: "Dnevna Dobra Djela",
+    appName: "Daily 1",
     ramadanTitle: "Ramazan",
     
     // Notifications
@@ -210,10 +210,11 @@ Maybe you'd like to do it too – may Allah accept it from us. 🌱
     ramadanModeDeactivatedDesc: "Redovna dnevna dobra djela su ponovo aktivna.",
     
     // Deed card
-    completed: "Završeno!",
+    completed: "Završeno! ✨",
     markComplete: "Završeno",
     alreadyCompleted: "Već završeno",
     markAsComplete: "Označi kao završeno",
+    todaysDeed: "Tvoje dobro djelo za danas",
     
     // Success messages
     successRamadan: "Allah ti primio!",
@@ -226,6 +227,8 @@ Maybe you'd like to do it too – may Allah accept it from us. 🌱
     firstDeed: "Prvo djelo!",
     goodDeeds: "Dobra Djela",
     nextDeed: "Sljedeće Djelo",
+    nextDeedIn: "Tvoje sljedeće dobro djelo dolazi za...",
+    currentStreak: "Trenutna serija",
     
     // Badges
     badge7Days: "7 Dana",
@@ -233,9 +236,10 @@ Maybe you'd like to do it too – may Allah accept it from us. 🌱
     badge100Deeds: "100 Djela",
     
     // Share
-    share: "Podijeli",
-    shareTitle: "OneSmallThing - Dobro Djelo",
-    shareText: `Danas sam učinio/la malo dobro djelo iz aplikacije „OneSmallThing".
+    share: "Podijeli & Inspiriši",
+    shareSubtext: "Podijeli svoje dobro djelo",
+    shareTitle: "Daily 1 - Dobro Djelo",
+    shareText: `Danas sam učinio/la malo dobro djelo iz aplikacije „Daily 1".
 Možda želiš i ti – Allah nam primio. 🌱
 
 „{deed}"
@@ -250,11 +254,13 @@ Možda želiš i ti – Allah nam primio. 🌱
     textCopiedDesc: "Sada ga možeš zalijepiti i podijeliti.",
     
     // History
-    last10Days: "Zadnjih 10 Dana",
+    last10Days: "Tvoj napredak",
+    streakDays: "Dana serija",
     
     // Footer
     footerRamadan: "Allah ti primio post i dobra djela.",
-    footerNormal: "Svaki dan malo dobro djelo čini svijet malo boljim.",
+    footerNormal: "„Najbolja djela kod Allaha su ona koja se redovno čine, makar bila i mala."",
+    footerSource: "— Sahih al-Bukhari 6465, Sahih Muslim 783",
     
     // Language
     selectLanguage: "Odaberi jezik",
