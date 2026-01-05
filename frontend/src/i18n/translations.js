@@ -92,7 +92,7 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
   
   en: {
     // App header
-    appName: "Daily Deeds",
+    appName: "Daily 1",
     ramadanTitle: "Ramadan",
     
     // Notifications
@@ -122,10 +122,11 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
     ramadanModeDeactivatedDesc: "Regular daily deeds are active again.",
     
     // Deed card
-    completed: "Done!",
+    completed: "Done! ✨",
     markComplete: "Done",
     alreadyCompleted: "Already completed",
     markAsComplete: "Mark as complete",
+    todaysDeed: "Your good deed for today",
     
     // Success messages
     successRamadan: "May Allah accept it!",
@@ -138,6 +139,8 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
     firstDeed: "First deed!",
     goodDeeds: "Good Deeds",
     nextDeed: "Next Deed",
+    nextDeedIn: "Your next good deed comes in...",
+    currentStreak: "Current Streak",
     
     // Badges
     badge7Days: "7 Days",
@@ -145,9 +148,10 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
     badge100Deeds: "100 Deeds",
     
     // Share
-    share: "Share",
-    shareTitle: "OneSmallThing - Good Deed",
-    shareText: `Today I did a small good deed from the app "OneSmallThing".
+    share: "Share & Inspire",
+    shareSubtext: "Share your good deed",
+    shareTitle: "Daily 1 - Good Deed",
+    shareText: `Today I did a small good deed from the app "Daily 1".
 Maybe you'd like to do it too – may Allah accept it from us. 🌱
 
 "{deed}"
@@ -162,11 +166,13 @@ Maybe you'd like to do it too – may Allah accept it from us. 🌱
     textCopiedDesc: "You can now paste and share it.",
     
     // History
-    last10Days: "Last 10 Days",
+    last10Days: "Your Progress",
+    streakDays: "Day Streak",
     
     // Footer
     footerRamadan: "May Allah accept your fasting and good deeds.",
-    footerNormal: "Every day a small good deed makes the world a little better.",
+    footerNormal: "\"The best deeds before Allah are those done regularly, even if they are small.\"",
+    footerSource: "— Sahih al-Bukhari 6465, Sahih Muslim 783",
     
     // Language
     selectLanguage: "Select language",
