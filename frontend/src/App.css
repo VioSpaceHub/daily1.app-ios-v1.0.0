@@ -62,7 +62,12 @@
     color: var(--text-primary);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.625rem;
+}
+
+.logo-img {
+    width: 28px;
+    height: 28px;
 }
 
 .logo-emoji {
