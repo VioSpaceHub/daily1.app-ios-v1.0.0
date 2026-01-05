@@ -434,6 +434,30 @@ function App() {
     if (savedManualRamadan) {
       setManualRamadanMode(JSON.parse(savedManualRamadan));
     }
+
+    // Listen for messages from Service Worker (when deed completed via notification)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data?.type === 'DEED_COMPLETED') {
+          const completedDate = event.data.date;
+          setCompletedDates(prev => {
+            if (!prev.includes(completedDate)) {
+              const newCompleted = [...prev, completedDate];
+              localStorage.setItem('goodDeeds_completed', JSON.stringify(newCompleted));
+              return newCompleted;
+            }
+            return prev;
+          });
+          if (completedDate === today) {
+            setTodayCompleted(true);
+          }
+          toast.success("Erledigt!", {
+            description: "Deine gute Tat wurde über die Benachrichtigung gespeichert.",
+            duration: 3000,
+          });
+        }
+      });
+    }
   }, [today]);
 
   // Ramadan Modus toggle
