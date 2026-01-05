@@ -129,6 +129,16 @@ function App() {
   // Formatiertes Datum anzeigen
   const formatDate = useCallback((dateString) => {
     const date = new Date(dateString);
+    
+    // Manual formatting for Bosnian (browser locale not fully supported)
+    if (language === 'bs') {
+      const weekday = bosnianWeekdays.long[date.getDay()];
+      const day = date.getDate();
+      const month = bosnianMonths.long[date.getMonth()];
+      const year = date.getFullYear();
+      return `${weekday}, ${day}. ${month} ${year}`;
+    }
+    
     const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
     return date.toLocaleDateString(dateLocales[language], options);
   }, [language]);
