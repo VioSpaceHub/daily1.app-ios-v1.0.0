@@ -616,17 +616,23 @@ function App() {
             </div>
           )}
           
-          {/* Hauptkarte mit täglicher Tat */}
+          {/* Hauptkarte mit täglicher Tat - VERGRÖSSERT & ZENTRIERT */}
           <div 
             className={`daily-card fade-in ${todayCompleted ? 'completed' : ''} ${showSuccess ? 'success-animation' : ''} ${isRamadanActive ? 'ramadan-card' : ''}`}
             data-testid="daily-card"
           >
+            <div className="todays-deed-label" data-testid="todays-deed-label">
+              {t.todaysDeed}
+            </div>
+            
             <div className="date-display" data-testid="current-date">
               {formatDate(today)}
             </div>
             
             <div className="deed-content">
-              {getCategoryIcon(currentDeed.text)}
+              <div className="deed-icon-wrapper">
+                {getCategoryIcon(currentDeed.text)}
+              </div>
               <p className="deed-text" data-testid="deed-text">
                 {currentDeed.text}
               </p>
@@ -660,43 +666,61 @@ function App() {
             </div>
           )}
           
-          {/* Statistiken */}
-          <div className="stats-container fade-in" style={{ animationDelay: '0.1s' }} data-testid="stats-container">
+          {/* Countdown Section - MIT TEXT */}
+          <div className="countdown-section fade-in" style={{ animationDelay: '0.1s' }} data-testid="countdown-section">
+            <div className="countdown-label">{t.nextDeedIn}</div>
+            <div className="countdown-display">
+              <Clock size={20} className="clock-icon-animated" />
+              <span className="countdown-value" data-testid="countdown-display">
+                {formatCountdown()}
+              </span>
+            </div>
+          </div>
+          
+          {/* Stats Row */}
+          <div className="stats-row fade-in" style={{ animationDelay: '0.15s' }} data-testid="stats-container">
             <div className="stat-card" data-testid="stat-total">
               <div className="stat-value">{totalCompleted}</div>
               <div className="stat-label">{getStatsLabel()}</div>
             </div>
-            <div className="stat-card countdown-card" data-testid="stat-countdown">
-              <div className="countdown-value" data-testid="countdown-display">
-                <Clock size={14} className="countdown-icon" />
-                {formatCountdown()}
-              </div>
-              <div className="stat-label">{t.nextDeed}</div>
+            <div className="stat-card" data-testid="stat-streak">
+              <div className="stat-value">{currentStreak}</div>
+              <div className="stat-label">{t.currentStreak}</div>
             </div>
           </div>
           
-          {/* Teilen Button */}
-          <div className="share-section fade-in" style={{ animationDelay: '0.15s' }} data-testid="share-section">
+          {/* Teilen Button - MOTIVIEREND */}
+          <div className="share-section fade-in" style={{ animationDelay: '0.2s' }} data-testid="share-section">
             <button
               className={`share-btn ${isRamadanActive ? 'ramadan-share' : ''}`}
               onClick={handleShare}
               data-testid="share-button"
             >
-              <Share2 size={16} />
+              <span className="share-icon">
+                <Heart size={14} />
+                <Share2 size={16} />
+              </span>
               <span>{t.share}</span>
             </button>
           </div>
           
-          {/* Historie - Letzte 10 Tage */}
+          {/* Fortschritt/Historie - GAMIFIZIERT */}
           <Collapsible
             open={historyOpen}
             onOpenChange={setHistoryOpen}
             className="history-collapsible fade-in"
-            style={{ animationDelay: '0.2s' }}
+            style={{ animationDelay: '0.25s' }}
           >
             <CollapsibleTrigger asChild>
               <button className="history-trigger" data-testid="history-trigger">
-                <span className="history-trigger-text">{t.last10Days}</span>
+                <div className="history-trigger-content">
+                  <span>{t.last10Days}</span>
+                  {currentStreak > 0 && (
+                    <span className="streak-indicator">
+                      {getStreakEmoji(currentStreak)} {currentStreak} {t.streakDays}
+                    </span>
+                  )}
+                </div>
                 {historyOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </button>
             </CollapsibleTrigger>
@@ -705,13 +729,16 @@ function App() {
                 {getLast10Days().map((day, index) => (
                   <div 
                     key={day.date} 
-                    className={`history-item ${day.isToday ? 'today' : ''}`}
+                    className={`history-item ${day.isToday ? 'today' : ''} ${day.isCompleted ? 'completed-day' : ''}`}
                     data-testid={`history-item-${day.date}`}
                   >
                     <span className="history-date">{day.formattedDate}</span>
-                    <div className={`history-status ${day.isCompleted ? 'completed' : 'pending'}`}>
+                    <div className="history-status">
                       {day.isCompleted ? (
-                        <CheckCircle2 size={18} className="status-icon completed" />
+                        <>
+                          <CheckCircle2 size={18} className="status-icon completed" />
+                          <span className="streak-emoji">{getStreakEmoji(currentStreak)}</span>
+                        </>
                       ) : (
                         <Circle size={18} className="status-icon pending" />
                       )}
@@ -722,11 +749,14 @@ function App() {
             </CollapsibleContent>
           </Collapsible>
           
-          {/* Motivations-Footer */}
-          <footer className="mt-auto pt-8 text-center" data-testid="footer">
-            <p className="text-xs text-[#52525B]">
+          {/* Footer - HADITH */}
+          <footer className="app-footer" data-testid="footer">
+            <p className="footer-quote">
               {isRamadanActive ? t.footerRamadan : t.footerNormal}
             </p>
+            {!isRamadanActive && (
+              <p className="footer-source">{t.footerSource}</p>
+            )}
           </footer>
         </main>
       </div>
