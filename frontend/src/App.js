@@ -600,7 +600,7 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
                 </>
               ) : (
                 <>
-                  <span className="logo-emoji">🌱</span>
+                  <img src="/logo-green.svg" alt="" className="logo-img" />
                   <span>Daily Deeds</span>
                 </>
               )}
