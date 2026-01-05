@@ -383,6 +383,14 @@ function App() {
           setFcmToken(token);
           setNotificationsEnabled(true);
           
+          // Store token in Service Worker for notification actions
+          if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+              type: 'STORE_TOKEN',
+              token: token
+            });
+          }
+          
           toast.success("Benachrichtigungen aktiviert!", {
             description: "Du erhältst täglich eine Erinnerung an deine gute Tat.",
             duration: 4000,
