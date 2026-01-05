@@ -296,6 +296,56 @@ async def get_deed_by_index(index: int):
     return GoodDeed(index=0, text=deed["text"], source=deed["source"])
 
 
+# ====== Deed Completion Routes ======
+
+class CompleteDeedRequest(BaseModel):
+    token: str
+    date: Optional[str] = None
+
+
+@api_router.post("/deeds/complete")
+async def complete_deed(data: CompleteDeedRequest):
+    """Mark a deed as completed for a specific device/token."""
+    try:
+        # Use provided date or today
+        deed_date = data.date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        
+        # Store completion in MongoDB
+        await db.deed_completions.update_one(
+            {"token": data.token, "date": deed_date},
+            {
+                "$set": {
+                    "token": data.token,
+                    "date": deed_date,
+                    "completed_at": datetime.now(timezone.utc).isoformat()
+                }
+            },
+            upsert=True
+        )
+        
+        logger.info(f"Deed completed for token {data.token[:20]}... on {deed_date}")
+        return {"success": True, "date": deed_date, "message": "Deed marked as completed"}
+    except Exception as e:
+        logger.error(f"Error completing deed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.get("/deeds/completed/{token}")
+async def get_completed_deeds(token: str):
+    """Get all completed deeds for a specific device/token."""
+    try:
+        completions = await db.deed_completions.find(
+            {"token": token},
+            {"_id": 0, "date": 1}
+        ).to_list(length=1000)
+        
+        dates = [c["date"] for c in completions]
+        return {"success": True, "completed_dates": dates}
+    except Exception as e:
+        logger.error(f"Error getting completed deeds: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # ====== FCM Push Notification Routes ======
 
 @api_router.post("/notifications/register")
