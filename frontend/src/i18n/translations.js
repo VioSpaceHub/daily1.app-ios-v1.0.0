@@ -1,10 +1,10 @@
-// Translations for Daily Deeds App
+// Translations for Daily 1 App
 // Languages: German (de), English (en), Bosnian (bs)
 
 export const translations = {
   de: {
     // App header
-    appName: "Daily Deeds",
+    appName: "Daily 1",
     ramadanTitle: "Ramadan",
     
     // Notifications
@@ -34,10 +34,11 @@ export const translations = {
     ramadanModeDeactivatedDesc: "Normale Tages-Taten wieder aktiv.",
     
     // Deed card
-    completed: "Erledigt!",
+    completed: "Geschafft! ✨",
     markComplete: "Erledigt",
     alreadyCompleted: "Bereits erledigt",
     markAsComplete: "Als erledigt markieren",
+    todaysDeed: "Deine gute Tat für heute",
     
     // Success messages
     successRamadan: "Möge Allah es annehmen!",
@@ -50,6 +51,8 @@ export const translations = {
     firstDeed: "Erste Tat!",
     goodDeeds: "Gute Taten",
     nextDeed: "Nächste Tat",
+    nextDeedIn: "Deine nächste gute Tat kommt in...",
+    currentStreak: "Aktuelle Serie",
     
     // Badges
     badge7Days: "7 Tage",
@@ -57,9 +60,10 @@ export const translations = {
     badge100Deeds: "100 Taten",
     
     // Share
-    share: "Teilen",
-    shareTitle: "OneSmallThing - Gute Tat",
-    shareText: `Heute habe ich eine kleine gute Tat aus der App „OneSmallThing" gemacht.
+    share: "Teilen & Inspirieren",
+    shareSubtext: "Teile deine gute Tat",
+    shareTitle: "Daily 1 - Gute Tat",
+    shareText: `Heute habe ich eine kleine gute Tat aus der App „Daily 1" gemacht.
 Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
 
 „{deed}"
@@ -74,11 +78,13 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
     textCopiedDesc: "Du kannst ihn jetzt einfügen und teilen.",
     
     // History
-    last10Days: "Letzte 10 Tage",
+    last10Days: "Dein Fortschritt",
+    streakDays: "Tage Serie",
     
     // Footer
     footerRamadan: "Möge Allah dein Fasten und deine guten Taten annehmen.",
-    footerNormal: "Jeden Tag eine kleine gute Tat macht die Welt ein bisschen besser.",
+    footerNormal: "„Die besten Taten vor Allah sind die, die regelmäßig getan werden, auch wenn sie klein sind."",
+    footerSource: "— Sahih al-Bukhari 6465, Sahih Muslim 783",
     
     // Language
     selectLanguage: "Sprache wählen",
