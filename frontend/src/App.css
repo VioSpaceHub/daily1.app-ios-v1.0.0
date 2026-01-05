@@ -14,86 +14,115 @@
     --accent-ramadan: #F59E0B;
     --border-subtle: rgba(255, 255, 255, 0.08);
     --border-medium: rgba(255, 255, 255, 0.12);
+    --gradient-growth: linear-gradient(135deg, rgba(52, 211, 153, 0.03) 0%, rgba(129, 140, 248, 0.02) 100%);
 }
 
-/* ===== Base ===== */
+/* ===== Base with Pattern ===== */
 .app-container {
     min-height: 100vh;
     background-color: var(--bg-default);
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+}
+
+/* Daily1 Background Pattern - Growth/Light Theme */
+.app-container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(52, 211, 153, 0.08), transparent),
+        radial-gradient(circle at 20% 80%, rgba(52, 211, 153, 0.03), transparent 40%),
+        radial-gradient(circle at 80% 20%, rgba(129, 140, 248, 0.03), transparent 40%);
+    pointer-events: none;
+    z-index: 0;
 }
 
 .hero-glow {
     position: fixed;
-    top: 40%;
+    top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle at center, rgba(52, 211, 153, 0.06) 0%, transparent 70%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle at center, rgba(52, 211, 153, 0.08) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
+    animation: pulseGlow 4s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
 }
 
 .main-content {
     position: relative;
     z-index: 1;
-    max-width: 420px;
+    max-width: 440px;
     margin: 0 auto;
-    padding: 2.5rem 1.5rem 3rem;
+    padding: 1.5rem 1.25rem 2rem;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* ===== Header ===== */
+@media (min-width: 480px) {
+    .main-content {
+        padding: 2rem 1.5rem 3rem;
+    }
+}
+
+/* ===== Header - Smaller, Neutral ===== */
 .header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .logo-text {
     font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    font-size: 1.375rem;
-    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
-    gap: 0.625rem;
+    gap: 0.5rem;
+    opacity: 0.9;
 }
 
 .logo-img {
-    width: 28px;
-    height: 28px;
-}
-
-.logo-emoji {
-    font-size: 1.5rem;
+    width: 22px;
+    height: 22px;
+    opacity: 0.8;
 }
 
 .logo-icon {
     color: var(--accent-ramadan);
+    opacity: 1;
 }
 
 .logo-text.ramadan-logo {
     color: var(--accent-ramadan);
+    opacity: 1;
 }
 
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .notification-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     background-color: transparent;
     border: 1px solid var(--border-subtle);
@@ -118,8 +147,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     background-color: transparent;
     border: 1px solid var(--border-subtle);
@@ -133,7 +162,7 @@
 }
 
 .language-btn .flag-icon {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     line-height: 1;
 }
 
@@ -142,7 +171,7 @@
     border: 1px solid var(--border-medium) !important;
     border-radius: 0.75rem !important;
     padding: 0.5rem !important;
-    min-width: 160px !important;
+    min-width: 150px !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
 }
 
@@ -168,7 +197,7 @@
 }
 
 .language-option .flag-icon {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     line-height: 1;
 }
 
@@ -187,23 +216,23 @@
 .notification-prompt-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 100;
-    padding: 1.5rem;
+    padding: 1.25rem;
 }
 
 .notification-prompt {
     background: var(--bg-surface);
     border: 1px solid var(--border-medium);
     border-radius: 1.5rem;
-    padding: 2.5rem 2rem;
+    padding: 2rem 1.75rem;
     max-width: 320px;
     text-align: center;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .prompt-icon {
@@ -278,37 +307,49 @@
     font-size: 0.8rem;
     font-weight: 500;
     color: var(--accent-ramadan);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    align-self: center;
 }
 
-/* ===== Daily Card ===== */
+/* ===== Daily Card - LARGER & CENTERED ===== */
 .daily-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: 1.5rem;
-    padding: 2.5rem 2rem;
+    border-radius: 1.75rem;
+    padding: 2rem 1.5rem 2.5rem;
     box-shadow: 
-        0 4px 24px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+        0 0 60px -20px var(--accent-primary-glow);
     position: relative;
+    text-align: center;
+    margin-bottom: 1.5rem;
 }
 
+@media (min-width: 480px) {
+    .daily-card {
+        padding: 2.5rem 2rem 3rem;
+    }
+}
+
+/* Glowing top border */
 .daily-card::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 20%;
-    right: 20%;
-    height: 1px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
-    opacity: 0.4;
+    opacity: 0.6;
+    border-radius: 2px;
 }
 
 .daily-card.completed {
-    border-color: rgba(52, 211, 153, 0.25);
+    border-color: rgba(52, 211, 153, 0.3);
     box-shadow: 
-        0 4px 24px rgba(0, 0, 0, 0.3),
-        0 0 40px -10px var(--accent-primary-glow);
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 80px -20px var(--accent-primary-glow);
 }
 
 .daily-card.ramadan-card::before {
@@ -316,10 +357,21 @@
 }
 
 .daily-card.ramadan-card.completed {
-    border-color: rgba(245, 158, 11, 0.25);
+    border-color: rgba(245, 158, 11, 0.3);
     box-shadow: 
-        0 4px 24px rgba(0, 0, 0, 0.3),
-        0 0 40px -10px rgba(245, 158, 11, 0.3);
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 80px -20px rgba(245, 158, 11, 0.3);
+}
+
+/* Today's Deed Label */
+.todays-deed-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.75rem;
 }
 
 .date-display {
@@ -329,28 +381,47 @@
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
 }
 
 .deed-content {
     display: flex;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
 }
 
+.deed-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(52, 211, 153, 0.1);
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+}
+
 .deed-icon {
     color: var(--accent-primary);
-    flex-shrink: 0;
-    margin-top: 0.25rem;
+    width: 24px;
+    height: 24px;
 }
 
 .deed-text {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     line-height: 1.5;
     color: var(--text-primary);
+    max-width: 320px;
+}
+
+@media (min-width: 480px) {
+    .deed-text {
+        font-size: 1.5rem;
+    }
 }
 
 .source-reference {
@@ -359,29 +430,49 @@
     color: var(--text-muted);
     font-style: italic;
     margin-bottom: 2rem;
-    padding-left: 2.125rem;
 }
 
+/* ===== Action Button - LARGER, ROUND, ANIMATED ===== */
 .action-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    gap: 0.625rem;
     background: var(--accent-primary);
     color: #000;
     font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 0.9rem;
-    padding: 1rem 2rem;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 1.125rem 2.5rem;
     border-radius: 9999px;
     border: none;
     cursor: pointer;
-    box-shadow: 0 0 24px -4px var(--accent-primary-glow);
-    transition: all 0.2s ease;
+    box-shadow: 
+        0 0 30px -4px var(--accent-primary-glow),
+        0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.action-btn:hover:not(:disabled)::before {
+    opacity: 1;
 }
 
 .action-btn:hover:not(:disabled) {
-    transform: scale(1.03);
-    box-shadow: 0 0 32px -4px var(--accent-primary-glow);
+    transform: scale(1.05);
+    box-shadow: 
+        0 0 40px -4px var(--accent-primary-glow),
+        0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
 .action-btn:active:not(:disabled) {
@@ -389,35 +480,46 @@
 }
 
 .action-btn:disabled {
-    opacity: 0.7;
     cursor: default;
 }
 
 .action-btn.completed {
     background: var(--accent-primary);
+    animation: completedPulse 0.6s ease-out;
+}
+
+@keyframes completedPulse {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.1); }
+    60% { transform: scale(0.95); }
+    100% { transform: scale(1); }
 }
 
 .action-btn.ramadan-btn {
     background: var(--accent-ramadan);
-    box-shadow: 0 0 24px -4px rgba(245, 158, 11, 0.4);
+    box-shadow: 
+        0 0 30px -4px rgba(245, 158, 11, 0.4),
+        0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .action-btn.ramadan-btn:hover:not(:disabled) {
-    box-shadow: 0 0 32px -4px rgba(245, 158, 11, 0.5);
+    box-shadow: 
+        0 0 40px -4px rgba(245, 158, 11, 0.5),
+        0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
 .check-icon {
-    width: 1.125rem;
-    height: 1.125rem;
+    width: 1.25rem;
+    height: 1.25rem;
 }
 
 /* ===== Badges ===== */
 .badges-container {
     display: flex;
     justify-content: center;
-    gap: 0.75rem;
-    margin-top: 2rem;
-    margin-bottom: 0.5rem;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
 }
 
 .badge {
@@ -427,7 +529,7 @@
     background: var(--bg-surface-highlight);
     border: 1px solid var(--border-subtle);
     border-radius: 9999px;
-    padding: 0.5rem 0.875rem;
+    padding: 0.4rem 0.75rem;
 }
 
 .badge-icon {
@@ -436,16 +538,58 @@
 
 .badge-label {
     font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 500;
     color: var(--text-secondary);
 }
 
-/* ===== Stats ===== */
-.stats-container {
+/* ===== Countdown Section - WITH TEXT ===== */
+.countdown-section {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.countdown-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.countdown-display {
     display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.countdown-value {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--accent-primary);
+    letter-spacing: 0.05em;
+}
+
+.clock-icon-animated {
+    color: var(--accent-primary);
+    animation: clockTick 1s ease-in-out infinite;
+}
+
+@keyframes clockTick {
+    0%, 100% { transform: rotate(0deg); opacity: 0.8; }
+    50% { transform: rotate(10deg); opacity: 1; }
+}
+
+/* ===== Stats Row ===== */
+.stats-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
 }
 
 .stat-card {
@@ -453,77 +597,72 @@
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     border-radius: 1rem;
-    padding: 1.25rem;
+    padding: 1rem;
     text-align: center;
 }
 
 .stat-value {
     font-family: 'Inter', sans-serif;
     font-weight: 700;
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     color: var(--accent-primary);
 }
 
 .stat-label {
     font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 500;
     color: var(--text-muted);
     margin-top: 0.25rem;
 }
 
-.countdown-value {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 1.375rem;
-    color: var(--accent-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-}
-
-.countdown-icon {
-    opacity: 0.7;
-}
-
-/* ===== Share Section ===== */
+/* ===== Share Button - MOTIVATING ===== */
 .share-section {
-    margin-top: 2rem;
-    text-align: center;
+    margin-bottom: 1.5rem;
 }
 
 .share-btn {
-    display: inline-flex;
+    width: 100%;
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    gap: 0.625rem;
     background: transparent;
     border: 1px solid var(--border-medium);
     color: var(--text-secondary);
     font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    font-size: 0.875rem;
-    padding: 0.875rem 1.75rem;
-    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
 }
 
 .share-btn:hover {
     border-color: var(--accent-primary);
     color: var(--accent-primary);
     background: rgba(52, 211, 153, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 211, 153, 0.1);
 }
 
 .share-btn.ramadan-share:hover {
     border-color: var(--accent-ramadan);
     color: var(--accent-ramadan);
     background: rgba(245, 158, 11, 0.05);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
 }
 
-/* ===== History ===== */
+.share-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* ===== Progress/History - GAMIFIED ===== */
 .history-collapsible {
-    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .history-trigger {
@@ -534,11 +673,11 @@
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     border-radius: 1rem;
-    padding: 1.125rem 1.5rem;
+    padding: 1rem 1.25rem;
     color: var(--text-secondary);
     font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.875rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -546,6 +685,23 @@
 .history-trigger:hover {
     border-color: var(--border-medium);
     color: var(--text-primary);
+}
+
+.history-trigger-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.streak-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: rgba(52, 211, 153, 0.1);
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    color: var(--accent-primary);
 }
 
 .history-content {
@@ -557,57 +713,95 @@
     border: 1px solid var(--border-subtle);
     border-radius: 1rem;
     overflow: hidden;
+    padding: 0.5rem;
 }
 
 .history-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border-subtle);
-    transition: background-color 0.2s ease;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+    margin-bottom: 0.25rem;
 }
 
 .history-item:last-child {
-    border-bottom: none;
+    margin-bottom: 0;
 }
 
 .history-item.today {
-    background: rgba(52, 211, 153, 0.05);
+    background: rgba(52, 211, 153, 0.08);
+}
+
+.history-item.completed-day {
+    background: rgba(52, 211, 153, 0.04);
 }
 
 .history-date {
     font-family: 'Inter', sans-serif;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     font-weight: 500;
     color: var(--text-secondary);
 }
 
 .history-item.today .history-date {
     color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.history-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-icon {
+    transition: all 0.3s ease;
 }
 
 .status-icon.completed {
     color: var(--accent-primary);
+    animation: checkIn 0.4s ease-out;
+}
+
+@keyframes checkIn {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .status-icon.pending {
     color: var(--text-muted);
-    opacity: 0.5;
+    opacity: 0.4;
 }
 
-/* ===== Footer ===== */
-footer {
+.streak-emoji {
+    font-size: 1rem;
+}
+
+/* ===== Footer - HADITH ===== */
+.app-footer {
     margin-top: auto;
-    padding-top: 3rem;
+    padding-top: 2rem;
     text-align: center;
 }
 
-footer p {
+.footer-quote {
     font-family: 'Inter', sans-serif;
     font-size: 0.8rem;
     color: var(--text-muted);
-    line-height: 1.5;
+    line-height: 1.6;
+    font-style: italic;
+    max-width: 320px;
+    margin: 0 auto 0.5rem;
+}
+
+.footer-source {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    opacity: 0.7;
 }
 
 /* ===== Animations ===== */
@@ -632,13 +826,21 @@ footer p {
 
 @keyframes successPulse {
     0% { transform: scale(1); }
-    50% { transform: scale(1.02); }
+    30% { transform: scale(1.03); }
+    60% { transform: scale(0.98); }
     100% { transform: scale(1); }
 }
 
 /* ===== Ramadan Styles ===== */
 .app-container.ramadan-active .hero-glow {
-    background: radial-gradient(circle at center, rgba(245, 158, 11, 0.06) 0%, transparent 70%);
+    background: radial-gradient(circle at center, rgba(245, 158, 11, 0.08) 0%, transparent 60%);
+}
+
+.app-container.ramadan-active::before {
+    background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245, 158, 11, 0.08), transparent),
+        radial-gradient(circle at 20% 80%, rgba(245, 158, 11, 0.03), transparent 40%),
+        radial-gradient(circle at 80% 20%, rgba(129, 140, 248, 0.02), transparent 40%);
 }
 
 /* ===== Tooltip ===== */
@@ -651,4 +853,28 @@ footer p {
     padding: 0.5rem 0.75rem;
     color: var(--text-primary);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Mobile Optimizations ===== */
+@media (max-width: 380px) {
+    .main-content {
+        padding: 1.25rem 1rem 2rem;
+    }
+    
+    .daily-card {
+        padding: 1.75rem 1.25rem 2rem;
+    }
+    
+    .deed-text {
+        font-size: 1.2rem;
+    }
+    
+    .countdown-value {
+        font-size: 1.75rem;
+    }
+    
+    .action-btn {
+        padding: 1rem 2rem;
+        font-size: 0.9rem;
+    }
 }
