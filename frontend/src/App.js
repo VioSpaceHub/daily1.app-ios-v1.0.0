@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import "@/App.css";
-import { Check, Moon, Clock, Share2, ChevronDown, ChevronUp, CheckCircle2, Circle, Bell, BellOff, Smile, Heart, MessageCircle, Sparkles, Globe } from "lucide-react";
+import { Check, Moon, Clock, Share2, ChevronDown, ChevronUp, CheckCircle2, Circle, Bell, BellOff, Smile, Heart, MessageCircle, Sparkles, Sun } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -26,18 +26,27 @@ import {
 } from "@/lib/firebase";
 import { translations, goodDeeds, ramadanDeeds, languages, dateLocales, bosnianMonths, bosnianWeekdays } from "@/i18n/translations";
 
-// Kategorie-Icons für Taten
+// Kategorie-Icons für Taten - Herz, Licht, Sonne
 const getCategoryIcon = (text) => {
   const lowerText = text.toLowerCase();
   if (lowerText.includes("lächle") || lowerText.includes("smile") || lowerText.includes("nasmiješi") || lowerText.includes("freundlich") || lowerText.includes("kindly") || lowerText.includes("ljubazno")) 
-    return <Smile size={18} className="deed-icon" />;
+    return <Smile className="deed-icon" />;
   if (lowerText.includes("salam") || lowerText.includes("selam") || lowerText.includes("begrüß") || lowerText.includes("greet") || lowerText.includes("pozdravi")) 
-    return <MessageCircle size={18} className="deed-icon" />;
+    return <Sun className="deed-icon" />;
   if (lowerText.includes("subhanallah") || lowerText.includes("alhamdulillah") || lowerText.includes("elhamdulillah") || lowerText.includes("allah")) 
-    return <Sparkles size={18} className="deed-icon" />;
+    return <Sparkles className="deed-icon" />;
   if (lowerText.includes("geduldig") || lowerText.includes("patient") || lowerText.includes("strpljiv") || lowerText.includes("vergebung") || lowerText.includes("forgive") || lowerText.includes("oprosti")) 
-    return <Heart size={18} className="deed-icon" />;
-  return <Sparkles size={18} className="deed-icon" />;
+    return <Heart className="deed-icon" />;
+  return <Heart className="deed-icon" />;
+};
+
+// Streak Emoji basierend auf der Anzahl
+const getStreakEmoji = (streak) => {
+  if (streak >= 30) return "🏆";
+  if (streak >= 14) return "⭐";
+  if (streak >= 7) return "🔥";
+  if (streak >= 3) return "✨";
+  return "🌱";
 };
 
 // Badges für Meilensteine
