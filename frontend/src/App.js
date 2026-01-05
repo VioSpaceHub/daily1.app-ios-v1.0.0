@@ -429,6 +429,28 @@ function App() {
     return days;
   }, [completedDates, today, language]);
 
+  // Streak berechnen (aufeinanderfolgende Tage)
+  const calculateStreak = useCallback(() => {
+    let streak = 0;
+    const now = new Date();
+    
+    for (let i = 0; i < 365; i++) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      const dateString = date.toISOString().split('T')[0];
+      
+      if (completedDates.includes(dateString)) {
+        streak++;
+      } else if (i > 0) {
+        break;
+      }
+    }
+    
+    return streak;
+  }, [completedDates]);
+
+  const currentStreak = calculateStreak();
+
   // Teilen-Funktion (Web Share API / iOS Share Sheet)
   const handleShare = async () => {
     const shareText = t.shareText.replace('{deed}', currentDeed.text);
