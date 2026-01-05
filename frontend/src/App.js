@@ -480,13 +480,27 @@ function App() {
   };
 
   // Tat abhaken
-  const handleComplete = useCallback(() => {
+  const handleComplete = useCallback(async () => {
     if (todayCompleted) return;
 
     const newCompleted = [...completedDates, today];
     setCompletedDates(newCompleted);
     setTodayCompleted(true);
     localStorage.setItem('goodDeeds_completed', JSON.stringify(newCompleted));
+    
+    // Sync to backend if we have a token
+    const token = localStorage.getItem('goodDeeds_fcmToken');
+    if (token) {
+      try {
+        await fetch(`${BACKEND_URL}/api/deeds/complete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, date: today })
+        });
+      } catch (e) {
+        console.log('Backend sync skipped');
+      }
+    }
     
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 600);
