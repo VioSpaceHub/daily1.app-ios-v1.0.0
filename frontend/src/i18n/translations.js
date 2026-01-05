@@ -83,7 +83,7 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
     
     // Footer
     footerRamadan: "Möge Allah dein Fasten und deine guten Taten annehmen.",
-    footerNormal: "„Die besten Taten vor Allah sind die, die regelmäßig getan werden, auch wenn sie klein sind."",
+    footerNormal: "«Die besten Taten vor Allah sind die, die regelmäßig getan werden, auch wenn sie klein sind.»",
     footerSource: "— Sahih al-Bukhari 6465, Sahih Muslim 783",
     
     // Language
