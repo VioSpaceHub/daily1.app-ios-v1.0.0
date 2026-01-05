@@ -1,187 +1,60 @@
 import { useState, useEffect, useCallback } from "react";
 import "@/App.css";
-import { Check, Moon, Clock, Share2, ChevronDown, ChevronUp, CheckCircle2, Circle, Bell, BellOff, Award, Smile, Heart, MessageCircle, Sparkles } from "lucide-react";
+import { Check, Moon, Clock, Share2, ChevronDown, ChevronUp, CheckCircle2, Circle, Bell, BellOff, Smile, Heart, MessageCircle, Sparkles, Globe } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Switch } from "@/components/ui/switch";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Toaster, toast } from "sonner";
 import { 
   requestNotificationPermission, 
   registerServiceWorker, 
   onForegroundMessage 
 } from "@/lib/firebase";
+import { translations, goodDeeds, ramadanDeeds, languages, dateLocales } from "@/i18n/translations";
 
 // Kategorie-Icons für Taten
 const getCategoryIcon = (text) => {
-  if (text.includes("Lächle") || text.includes("freundlich")) return <Smile size={18} className="deed-icon" />;
-  if (text.includes("Salam") || text.includes("Begrüße")) return <MessageCircle size={18} className="deed-icon" />;
-  if (text.includes("Subhanallah") || text.includes("Alhamdulillah") || text.includes("Allah")) return <Sparkles size={18} className="deed-icon" />;
-  if (text.includes("geduldig") || text.includes("Vergebung")) return <Heart size={18} className="deed-icon" />;
+  const lowerText = text.toLowerCase();
+  if (lowerText.includes("lächle") || lowerText.includes("smile") || lowerText.includes("nasmiješi") || lowerText.includes("freundlich") || lowerText.includes("kindly") || lowerText.includes("ljubazno")) 
+    return <Smile size={18} className="deed-icon" />;
+  if (lowerText.includes("salam") || lowerText.includes("selam") || lowerText.includes("begrüß") || lowerText.includes("greet") || lowerText.includes("pozdravi")) 
+    return <MessageCircle size={18} className="deed-icon" />;
+  if (lowerText.includes("subhanallah") || lowerText.includes("alhamdulillah") || lowerText.includes("elhamdulillah") || lowerText.includes("allah")) 
+    return <Sparkles size={18} className="deed-icon" />;
+  if (lowerText.includes("geduldig") || lowerText.includes("patient") || lowerText.includes("strpljiv") || lowerText.includes("vergebung") || lowerText.includes("forgive") || lowerText.includes("oprosti")) 
+    return <Heart size={18} className="deed-icon" />;
   return <Sparkles size={18} className="deed-icon" />;
 };
 
 // Badges für Meilensteine
-const getBadges = (totalCompleted) => {
+const getBadges = (totalCompleted, t) => {
   const badges = [];
-  if (totalCompleted >= 7) badges.push({ icon: "🔥", label: "7 Tage", achieved: true });
-  if (totalCompleted >= 30) badges.push({ icon: "⭐", label: "30 Tage", achieved: true });
-  if (totalCompleted >= 100) badges.push({ icon: "🏆", label: "100 Taten", achieved: true });
+  if (totalCompleted >= 7) badges.push({ icon: "🔥", label: t.badge7Days, achieved: true });
+  if (totalCompleted >= 30) badges.push({ icon: "⭐", label: t.badge30Days, achieved: true });
+  if (totalCompleted >= 100) badges.push({ icon: "🏆", label: t.badge100Deeds, achieved: true });
   return badges;
 };
 
-// Vordefinierte Liste an guten Taten (aus JSON) mit Quellenangabe
-const GOOD_DEEDS = [
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-  { text: "Lächle einer Person mit der Absicht, ihr Gutes zu tun.", source: "Sahih Muslim 1009" },
-  { text: "Begrüße heute bewusst jemanden mit Salam.", source: "Sahih Muslim 54" },
-  { text: "Sprich dreimal Subhanallah mit Bedacht.", source: "Sure 33:41" },
-  { text: "Sage bewusst Alhamdulillah für etwas Kleines.", source: "Sure 14:7" },
-  { text: "Reagiere heute geduldig statt impulsiv.", source: "Sure 3:134" },
-];
-
-// Ramadan-Taten (30 Tage)
-const RAMADAN_DEEDS = [
-  { day: 1, text: "Erneuere heute bewusst deine Niyya für das Fasten.", source: "Sahih al-Bukhari 1" },
-  { day: 2, text: "Achte heute besonders darauf, nichts Verletzendes zu sagen.", source: "Sahih al-Bukhari 1904" },
-  { day: 3, text: "Denke heute bewusst an eine Gabe Allahs beim Fasten.", source: "Sure 14:7" },
-  { day: 4, text: "Reagiere heute geduldig bei Müdigkeit oder Hunger.", source: "Sure 2:153" },
-  { day: 5, text: "Teile Iftar oder ermögliche jemandem das Fastenbrechen.", source: "Sunan at-Tirmidhi 807" },
-  { day: 6, text: "Lies mindestens 5 Ayat mit Ruhe.", source: "Sure 2:185" },
-  { day: 7, text: "Höre Qurʾan ohne Ablenkung.", source: "Sure 7:204" },
-  { day: 8, text: "Bitte Allah über den Tag verteilt um Vergebung.", source: "Sahih Muslim 2702" },
-  { day: 9, text: "Gedenke Allah beim Gehen oder Warten.", source: "Sure 33:41" },
-  { day: 10, text: "Denke kurz über das Jenseits nach.", source: "Sure 59:18" },
-  { day: 11, text: "Vergib heute jemandem innerlich.", source: "Sure 24:22" },
-  { day: 12, text: "Sprich heute besonders freundlich mit Familie.", source: "Sahih al-Bukhari 6039" },
-  { day: 13, text: "Hilf jemandem vor dem Iftar.", source: "Sahih Muslim 1009" },
-  { day: 14, text: "Lächle trotz Müdigkeit bewusst.", source: "Sahih Muslim 1009" },
-  { day: 15, text: "Ziehe dich heute bewusst aus Streit zurück.", source: "Sunan Abi Dawud 4800" },
-  { day: 16, text: "Bleibe heute zwei Minuten länger im Duʿa.", source: "Sure 2:186" },
-  { day: 17, text: "Verrichte zwei Rakʿah extra mit Ruhe.", source: "Sahih Muslim 759" },
-  { day: 18, text: "Gedenke Allah kurz vor dem Schlafen.", source: "Sahih al-Bukhari 6311" },
-  { day: 19, text: "Habe heute gute Hoffnung auf Allah.", source: "Sahih Muslim 2675" },
-  { day: 20, text: "Beginne dein Duʿa heute mit Dank.", source: "Sunan Abi Dawud 1481" },
-  { day: 21, text: "Bitte Allah um Vergebung und Nähe.", source: "Sure 97:1-5" },
-  { day: 22, text: "Reflektiere leise über dein Herz.", source: "Sure 59:18" },
-  { day: 23, text: "Kontaktiere jemanden aus Gutem Willen.", source: "Sahih Muslim 2557" },
-  { day: 24, text: "Bitte Allah um Barakah im restlichen Ramadan.", source: "Sure 7:96" },
-  { day: 25, text: "Prüfe heute deine Absichten.", source: "Sahih al-Bukhari 1" },
-  { day: 26, text: "Bitte Allah, deine Taten anzunehmen.", source: "Sure 2:127" },
-  { day: 27, text: "Danke Allah für den Ramadan.", source: "Sure 2:185" },
-  { day: 28, text: "Nimm dir eine kleine Tat für danach vor.", source: "Sahih Muslim 783" },
-  { day: 29, text: "Bewahre Hoffnung nach Ramadan.", source: "Sure 39:53" },
-  { day: 30, text: "Verabschiede Ramadan bewusst im Herzen.", source: "Sahih al-Bukhari 6465" },
-];
-
 // Ramadan 2026: 17. Februar Abend bis 20. März
-const RAMADAN_START = new Date(2026, 1, 17, 18, 0, 0); // 17. Februar 2026, 18:00 Uhr
-const RAMADAN_END = new Date(2026, 2, 20, 23, 59, 59); // 20. März 2026, 23:59 Uhr
+const RAMADAN_START = new Date(2026, 1, 17, 18, 0, 0);
+const RAMADAN_END = new Date(2026, 2, 20, 23, 59, 59);
 
 // Funktion um basierend auf dem Datum den Index der Tat zu bestimmen
-const getDeedIndexForDate = (date) => {
+const getDeedIndexForDate = (date, deedsLength) => {
   const dateString = date.toISOString().split('T')[0];
   let hash = 0;
   for (let i = 0; i < dateString.length; i++) {
@@ -189,7 +62,7 @@ const getDeedIndexForDate = (date) => {
     hash = ((hash << 5) - hash) + char;
     hash = hash & hash;
   }
-  return Math.abs(hash) % GOOD_DEEDS.length;
+  return Math.abs(hash) % deedsLength;
 };
 
 // App-Tag berechnen (06:00 - 05:59 nächster Tag)
@@ -197,19 +70,11 @@ const getAppDay = () => {
   const now = new Date();
   const hours = now.getHours();
   if (hours < 6) {
-    // Vor 6 Uhr: gehört zum Vortag
     const yesterday = new Date(now);
     yesterday.setDate(yesterday.getDate() - 1);
     return yesterday.toISOString().split('T')[0];
   }
   return now.toISOString().split('T')[0];
-};
-
-// Formatiertes Datum anzeigen
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-  return date.toLocaleDateString('de-DE', options);
 };
 
 // Prüfen ob aktuell Ramadan ist
@@ -246,27 +111,39 @@ function App() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [fcmToken, setFcmToken] = useState(null);
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
+  const [language, setLanguage] = useState('de');
 
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+  // Get translations for current language
+  const t = translations[language];
+  const currentGoodDeeds = goodDeeds[language];
+  const currentRamadanDeeds = ramadanDeeds[language];
 
   const today = getAppDay();
   
   // Ramadan Modus - automatisch oder manuell
   const isRamadanActive = ramadanMode || manualRamadanMode;
   const ramadanDay = getRamadanDay();
+
+  // Formatiertes Datum anzeigen
+  const formatDate = useCallback((dateString) => {
+    const date = new Date(dateString);
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    return date.toLocaleDateString(dateLocales[language], options);
+  }, [language]);
   
   // Aktuelle Tat bestimmen
   const getCurrentDeed = useCallback(() => {
     if (isRamadanActive) {
-      // Im Ramadan-Modus: Ramadan-Tag verwenden oder Tag 1 als Fallback
       const dayIndex = ramadanDay > 0 ? ramadanDay - 1 : 0;
-      const deed = RAMADAN_DEEDS[dayIndex];
+      const deed = currentRamadanDeeds[dayIndex];
       return { text: deed.text, source: deed.source, isRamadan: true, day: ramadanDay > 0 ? ramadanDay : 1 };
     }
-    const deedIndex = getDeedIndexForDate(new Date(today));
-    const deed = GOOD_DEEDS[deedIndex];
+    const deedIndex = getDeedIndexForDate(new Date(today), currentGoodDeeds.length);
+    const deed = currentGoodDeeds[deedIndex];
     return { text: deed.text, source: deed.source, isRamadan: false };
-  }, [isRamadanActive, ramadanDay, today]);
+  }, [isRamadanActive, ramadanDay, today, currentGoodDeeds, currentRamadanDeeds]);
 
   const currentDeed = getCurrentDeed();
 
@@ -276,9 +153,7 @@ function App() {
       const now = new Date();
       let nextReset = new Date(now);
       
-      // Nächster Reset ist um 06:00 Uhr
       if (now.getHours() >= 6) {
-        // Reset ist morgen um 06:00
         nextReset.setDate(nextReset.getDate() + 1);
       }
       nextReset.setHours(6, 0, 0, 0);
@@ -296,6 +171,14 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // Load saved language
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem('goodDeeds_language');
+    if (savedLanguage && ['de', 'en', 'bs'].includes(savedLanguage)) {
+      setLanguage(savedLanguage);
+    }
+  }, []);
+
   // Ramadan automatisch aktivieren
   useEffect(() => {
     setRamadanMode(isRamadanPeriod());
@@ -304,7 +187,6 @@ function App() {
   // Firebase Push Notifications Setup
   useEffect(() => {
     const setupNotifications = async () => {
-      // Check if notifications are already enabled
       const savedToken = localStorage.getItem('goodDeeds_fcmToken');
       const hasSeenPrompt = localStorage.getItem('goodDeeds_notificationPromptSeen');
       
@@ -312,14 +194,11 @@ function App() {
         setFcmToken(savedToken);
         setNotificationsEnabled(true);
       } else if (!hasSeenPrompt) {
-        // Show notification prompt for new users after 2 seconds
         setTimeout(() => setShowNotificationPrompt(true), 2000);
       }
 
-      // Register service worker
       await registerServiceWorker();
 
-      // Listen for foreground messages
       try {
         onForegroundMessage((payload) => {
           toast(payload.notification?.title || 'Daily Deeds', {
@@ -350,7 +229,6 @@ function App() {
   // Toggle Push Notifications
   const toggleNotifications = async () => {
     if (notificationsEnabled) {
-      // Disable notifications
       if (fcmToken) {
         try {
           await fetch(`${BACKEND_URL}/api/notifications/unregister/${fcmToken}`, {
@@ -363,15 +241,13 @@ function App() {
       localStorage.removeItem('goodDeeds_fcmToken');
       setFcmToken(null);
       setNotificationsEnabled(false);
-      toast("Benachrichtigungen deaktiviert", {
-        description: "Du erhältst keine Push-Nachrichten mehr.",
+      toast(t.notificationsDisabled, {
+        description: t.notificationsDisabledDesc,
         duration: 3000,
       });
     } else {
-      // Enable notifications
       const token = await requestNotificationPermission();
       if (token) {
-        // Register token on backend
         try {
           await fetch(`${BACKEND_URL}/api/notifications/register`, {
             method: 'POST',
@@ -383,7 +259,6 @@ function App() {
           setFcmToken(token);
           setNotificationsEnabled(true);
           
-          // Store token in Service Worker for notification actions
           if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
             navigator.serviceWorker.controller.postMessage({
               type: 'STORE_TOKEN',
@@ -391,12 +266,11 @@ function App() {
             });
           }
           
-          toast.success("Benachrichtigungen aktiviert!", {
-            description: "Du erhältst täglich eine Erinnerung an deine gute Tat.",
+          toast.success(t.notificationsEnabled, {
+            description: t.notificationsEnabledDesc,
             duration: 4000,
           });
 
-          // Send test notification
           try {
             await fetch(`${BACKEND_URL}/api/notifications/send-test?token=${token}`, {
               method: 'POST',
@@ -406,14 +280,14 @@ function App() {
           }
         } catch (error) {
           console.error('Error registering token:', error);
-          toast.error("Fehler beim Aktivieren", {
-            description: "Bitte versuche es erneut.",
+          toast.error(t.enableError, {
+            description: t.enableErrorDesc,
             duration: 3000,
           });
         }
       } else {
-        toast.error("Berechtigung verweigert", {
-          description: "Bitte erlaube Benachrichtigungen in den Browser-Einstellungen.",
+        toast.error(t.permissionDenied, {
+          description: t.permissionDeniedDesc,
           duration: 4000,
         });
       }
@@ -435,7 +309,6 @@ function App() {
       setManualRamadanMode(JSON.parse(savedManualRamadan));
     }
 
-    // Listen for messages from Service Worker (when deed completed via notification)
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('message', (event) => {
         if (event.data?.type === 'DEED_COMPLETED') {
@@ -451,32 +324,19 @@ function App() {
           if (completedDate === today) {
             setTodayCompleted(true);
           }
-          toast.success("Erledigt!", {
-            description: "Deine gute Tat wurde über die Benachrichtigung gespeichert.",
+          toast.success(t.completed, {
+            description: t.deedSavedNotification,
             duration: 3000,
           });
         }
       });
     }
-  }, [today]);
+  }, [today, t]);
 
-  // Ramadan Modus toggle
-  const toggleRamadanMode = () => {
-    const newValue = !manualRamadanMode;
-    setManualRamadanMode(newValue);
-    localStorage.setItem('goodDeeds_manualRamadan', JSON.stringify(newValue));
-    
-    if (newValue) {
-      toast.success("Ramadan Mubarak!", {
-        description: "Ramadan-Modus aktiviert. Möge Allah dein Fasten annehmen.",
-        duration: 4000,
-      });
-    } else {
-      toast("Ramadan-Modus deaktiviert", {
-        description: "Normale Tages-Taten wieder aktiv.",
-        duration: 3000,
-      });
-    }
+  // Language change handler
+  const handleLanguageChange = (langCode) => {
+    setLanguage(langCode);
+    localStorage.setItem('goodDeeds_language', langCode);
   };
 
   // Tat abhaken
@@ -488,7 +348,6 @@ function App() {
     setTodayCompleted(true);
     localStorage.setItem('goodDeeds_completed', JSON.stringify(newCompleted));
     
-    // Sync to backend if we have a token
     const token = localStorage.getItem('goodDeeds_fcmToken');
     if (token) {
       try {
@@ -505,15 +364,13 @@ function App() {
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 600);
     
-    const message = isRamadanActive 
-      ? "Möge Allah es annehmen!" 
-      : "Großartig! Du hast heute Gutes getan.";
+    const message = isRamadanActive ? t.successRamadan : t.successNormal;
     
     toast.success(message, {
-      description: "Deine gute Tat wurde gespeichert.",
+      description: t.deedSaved,
       duration: 3000,
     });
-  }, [completedDates, today, todayCompleted, isRamadanActive]);
+  }, [completedDates, today, todayCompleted, isRamadanActive, t, BACKEND_URL]);
 
   // Letzte 10 Tage generieren
   const getLast10Days = useCallback(() => {
@@ -531,7 +388,7 @@ function App() {
         date: dateString,
         isCompleted,
         isToday,
-        formattedDate: date.toLocaleDateString('de-DE', { 
+        formattedDate: date.toLocaleDateString(dateLocales[language], { 
           weekday: 'short', 
           day: 'numeric', 
           month: 'short' 
@@ -540,28 +397,20 @@ function App() {
     }
     
     return days;
-  }, [completedDates, today]);
+  }, [completedDates, today, language]);
 
   // Teilen-Funktion (Web Share API / iOS Share Sheet)
   const handleShare = async () => {
-    const shareText = `Heute habe ich eine kleine gute Tat aus der App „OneSmallThing" gemacht.
-Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
-
-„${currentDeed.text}"
-
-—
-
-„Wer zu einer Rechtleitung einlädt, erhält den gleichen Lohn wie derjenige, der ihr folgt, ohne dass deren Lohn gemindert wird."
-— Sahih Muslim 2674`;
+    const shareText = t.shareText.replace('{deed}', currentDeed.text);
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'OneSmallThing - Gute Tat',
+          title: t.shareTitle,
           text: shareText,
         });
-        toast.success("Möge Allah es belohnen!", {
-          description: "Danke fürs Teilen mit guter Absicht.",
+        toast.success(t.shareSuccess, {
+          description: t.shareSuccessDesc,
           duration: 3000,
         });
       } catch (err) {
@@ -570,11 +419,10 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
         }
       }
     } else {
-      // Fallback: Copy to clipboard
       try {
         await navigator.clipboard.writeText(shareText);
-        toast.success("Text kopiert!", {
-          description: "Du kannst ihn jetzt einfügen und teilen.",
+        toast.success(t.textCopied, {
+          description: t.textCopiedDesc,
           duration: 3000,
         });
       } catch (err) {
@@ -585,13 +433,13 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
 
   // Statistiken berechnen
   const totalCompleted = completedDates.length;
-  const badges = getBadges(totalCompleted);
+  const badges = getBadges(totalCompleted, t);
 
   // Motivierender Text für Stats
   const getStatsLabel = () => {
-    if (totalCompleted === 0) return "Starte heute!";
-    if (totalCompleted === 1) return "Erste Tat!";
-    return "Gute Taten";
+    if (totalCompleted === 0) return t.startToday;
+    if (totalCompleted === 1) return t.firstDeed;
+    return t.goodDeeds;
   };
 
   // Countdown formatieren
@@ -599,6 +447,9 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
     const pad = (n) => n.toString().padStart(2, '0');
     return `${pad(countdown.hours)}:${pad(countdown.minutes)}:${pad(countdown.seconds)}`;
   };
+
+  // Get current language info
+  const currentLang = languages.find(l => l.code === language) || languages[0];
 
   return (
     <TooltipProvider>
@@ -622,37 +473,37 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
             <div className="notification-prompt-overlay">
               <div className="notification-prompt">
                 <div className="prompt-icon">🔔</div>
-                <h3>Tägliche Erinnerung</h3>
-                <p>Möchtest du jeden Morgen um 6 Uhr an deine gute Tat erinnert werden?</p>
+                <h3>{t.dailyReminder}</h3>
+                <p>{t.reminderQuestion}</p>
                 <div className="prompt-buttons">
-                  <button className="prompt-btn primary" onClick={handleNotificationPromptAccept}>
-                    Ja, erinnere mich
+                  <button className="prompt-btn primary" onClick={handleNotificationPromptAccept} data-testid="notification-accept">
+                    {t.yesRemindMe}
                   </button>
-                  <button className="prompt-btn secondary" onClick={handleNotificationPromptDismiss}>
-                    Später
+                  <button className="prompt-btn secondary" onClick={handleNotificationPromptDismiss} data-testid="notification-dismiss">
+                    {t.later}
                   </button>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Header mit Logo und Ramadan Toggle */}
+          {/* Header mit Logo und Sprachauswahl */}
           <div className="header-row">
             <div className={`logo-text ${isRamadanActive ? 'ramadan-logo' : ''}`} data-testid="app-logo">
               {isRamadanActive ? (
                 <>
                   <Moon size={22} className="logo-icon" />
-                  <span>Ramadan</span>
+                  <span>{t.ramadanTitle}</span>
                 </>
               ) : (
                 <>
                   <img src="/logo-green.svg" alt="" className="logo-img" />
-                  <span>Daily Deeds</span>
+                  <span>{t.appName}</span>
                 </>
               )}
             </div>
             
-            {/* Ramadan Mode Toggle */}
+            {/* Header Actions */}
             <div className="header-actions" data-testid="header-actions">
               {/* Notification Toggle */}
               <Tooltip>
@@ -666,34 +517,42 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
                   </button>
                 </TooltipTrigger>
                 <TooltipContent className="tooltip-content">
-                  {notificationsEnabled 
-                    ? "Benachrichtigungen deaktivieren" 
-                    : "Tägliche Erinnerung aktivieren"}
+                  {notificationsEnabled ? t.disableNotifications : t.enableNotifications}
                 </TooltipContent>
               </Tooltip>
 
-              {/* Ramadan Toggle */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center gap-2">
-                    <Moon size={14} className={`${isRamadanActive ? 'text-[#F59E0B]' : 'text-[#52525B]'}`} />
-                    <Switch
-                      checked={manualRamadanMode || ramadanMode}
-                      onCheckedChange={toggleRamadanMode}
-                      disabled={ramadanMode}
-                      className="ramadan-switch"
-                      data-testid="ramadan-switch"
-                    />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent className="tooltip-content">
-                  {ramadanMode 
-                    ? "Ramadan-Modus automatisch aktiv" 
-                    : manualRamadanMode 
-                      ? "Ramadan-Modus deaktivieren" 
-                      : "Ramadan-Modus aktivieren"}
-                </TooltipContent>
-              </Tooltip>
+              {/* Language Selector */}
+              <DropdownMenu>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DropdownMenuTrigger asChild>
+                      <button 
+                        className="language-btn"
+                        data-testid="language-selector"
+                      >
+                        <span className="flag-icon">{currentLang.flag}</span>
+                      </button>
+                    </DropdownMenuTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent className="tooltip-content">
+                    {t.selectLanguage}
+                  </TooltipContent>
+                </Tooltip>
+                <DropdownMenuContent align="end" className="language-dropdown">
+                  {languages.map((lang) => (
+                    <DropdownMenuItem 
+                      key={lang.code}
+                      onClick={() => handleLanguageChange(lang.code)}
+                      className={`language-option ${language === lang.code ? 'active' : ''}`}
+                      data-testid={`language-option-${lang.code}`}
+                    >
+                      <span className="flag-icon">{lang.flag}</span>
+                      <span className="lang-name">{lang.name}</span>
+                      {language === lang.code && <Check size={14} className="check-mark" />}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
           
@@ -701,7 +560,7 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
           {isRamadanActive && (
             <div className="ramadan-badge fade-in" data-testid="ramadan-badge">
               <Moon size={12} />
-              <span>Tag {currentDeed.day} von 30</span>
+              <span>{t.ramadanDay.replace('{day}', currentDeed.day)}</span>
             </div>
           )}
           
@@ -729,11 +588,11 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
               className={`action-btn ${todayCompleted ? 'completed' : ''} ${isRamadanActive ? 'ramadan-btn' : ''}`}
               onClick={handleComplete}
               disabled={todayCompleted}
-              aria-label={todayCompleted ? "Bereits erledigt" : "Als erledigt markieren"}
+              aria-label={todayCompleted ? t.alreadyCompleted : t.markAsComplete}
               data-testid="complete-button"
             >
               <Check className="check-icon" />
-              {todayCompleted ? 'Erledigt!' : 'Erledigt'}
+              {todayCompleted ? t.completed : t.markComplete}
             </button>
           </div>
           
@@ -760,7 +619,7 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
                 <Clock size={14} className="countdown-icon" />
                 {formatCountdown()}
               </div>
-              <div className="stat-label">Nächste Tat</div>
+              <div className="stat-label">{t.nextDeed}</div>
             </div>
           </div>
           
@@ -772,7 +631,7 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
               data-testid="share-button"
             >
               <Share2 size={16} />
-              <span>Teilen</span>
+              <span>{t.share}</span>
             </button>
           </div>
           
@@ -785,7 +644,7 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
           >
             <CollapsibleTrigger asChild>
               <button className="history-trigger" data-testid="history-trigger">
-                <span className="history-trigger-text">Letzte 10 Tage</span>
+                <span className="history-trigger-text">{t.last10Days}</span>
                 {historyOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </button>
             </CollapsibleTrigger>
@@ -814,9 +673,7 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
           {/* Motivations-Footer */}
           <footer className="mt-auto pt-8 text-center" data-testid="footer">
             <p className="text-xs text-[#52525B]">
-              {isRamadanActive 
-                ? "Möge Allah dein Fasten und deine guten Taten annehmen." 
-                : "Jeden Tag eine kleine gute Tat macht die Welt ein bisschen besser."}
+              {isRamadanActive ? t.footerRamadan : t.footerNormal}
             </p>
           </footer>
         </main>
