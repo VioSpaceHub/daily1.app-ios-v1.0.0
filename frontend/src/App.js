@@ -394,15 +394,26 @@ function App() {
       const isCompleted = completedDates.includes(dateString);
       const isToday = dateString === today;
       
+      // Manual formatting for Bosnian
+      let formattedDate;
+      if (language === 'bs') {
+        const weekday = bosnianWeekdays.short[date.getDay()];
+        const day = date.getDate();
+        const month = bosnianMonths.short[date.getMonth()];
+        formattedDate = `${weekday}, ${day}. ${month}`;
+      } else {
+        formattedDate = date.toLocaleDateString(dateLocales[language], { 
+          weekday: 'short', 
+          day: 'numeric', 
+          month: 'short' 
+        });
+      }
+      
       days.push({
         date: dateString,
         isCompleted,
         isToday,
-        formattedDate: date.toLocaleDateString(dateLocales[language], { 
-          weekday: 'short', 
-          day: 'numeric', 
-          month: 'short' 
-        })
+        formattedDate
       });
     }
     
