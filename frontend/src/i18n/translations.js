@@ -259,7 +259,7 @@ Možda želiš i ti – Allah nam primio. 🌱
     
     // Footer
     footerRamadan: "Allah ti primio post i dobra djela.",
-    footerNormal: "„Najbolja djela kod Allaha su ona koja se redovno čine, makar bila i mala."",
+    footerNormal: "«Najbolja djela kod Allaha su ona koja se redovno čine, makar bila i mala.»",
     footerSource: "— Sahih al-Bukhari 6465, Sahih Muslim 783",
     
     // Language
