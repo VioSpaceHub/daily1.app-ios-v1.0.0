@@ -24,7 +24,7 @@ import {
   registerServiceWorker, 
   onForegroundMessage 
 } from "@/lib/firebase";
-import { translations, goodDeeds, ramadanDeeds, languages, dateLocales } from "@/i18n/translations";
+import { translations, goodDeeds, ramadanDeeds, languages, dateLocales, bosnianMonths, bosnianWeekdays } from "@/i18n/translations";
 
 // Kategorie-Icons für Taten
 const getCategoryIcon = (text) => {
