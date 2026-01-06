@@ -374,6 +374,42 @@ function App() {
   const handleLanguageChange = (langCode) => {
     setLanguage(langCode);
     localStorage.setItem('goodDeeds_language', langCode);
+    updateNotificationLanguage(langCode);
+  };
+
+  // Check if should show review prompt (after 5-7 completed deeds)
+  const checkReviewPrompt = useCallback((completedCount) => {
+    const hasReviewed = localStorage.getItem('goodDeeds_hasReviewed');
+    const reviewDismissed = localStorage.getItem('goodDeeds_reviewDismissed');
+    
+    if (hasReviewed || reviewDismissed) return;
+    
+    // Show prompt after 5, 6, or 7 completed deeds
+    if (completedCount >= 5 && completedCount <= 7) {
+      const shownAt = localStorage.getItem('goodDeeds_reviewShownAt');
+      if (!shownAt || parseInt(shownAt) !== completedCount) {
+        localStorage.setItem('goodDeeds_reviewShownAt', completedCount.toString());
+        setTimeout(() => setShowReviewPrompt(true), 1500);
+      }
+    }
+  }, []);
+
+  // Handle review button click
+  const handleReviewClick = () => {
+    localStorage.setItem('goodDeeds_hasReviewed', 'true');
+    setShowReviewPrompt(false);
+    window.open(APP_STORE_URL, '_blank');
+  };
+
+  // Handle review later
+  const handleReviewLater = () => {
+    setShowReviewPrompt(false);
+  };
+
+  // Handle never ask again
+  const handleReviewNever = () => {
+    localStorage.setItem('goodDeeds_reviewDismissed', 'true');
+    setShowReviewPrompt(false);
   };
 
   // Tat abhaken
