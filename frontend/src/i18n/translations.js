@@ -93,6 +93,11 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
     pushTitle: "🌱 Daily 1",
     pushBody: "Deine gute Tat für heute wartet auf dich!",
     
+    // iOS specific notifications
+    iosNotificationsNote: "Bitte aktiviere Mitteilungen in: Einstellungen → Daily 1 → Mitteilungen",
+    iosPermissionDenied: "Berechtigung benötigt",
+    iosPermissionDeniedDesc: "Bitte aktiviere Mitteilungen in: Einstellungen → Daily 1 → Mitteilungen",
+    
     // Review Prompt
     reviewTitle: "Gefällt dir Daily 1?",
     reviewSubtext: "Eine kurze Bewertung unterstützt dieses kostenlose Projekt 🤍",
