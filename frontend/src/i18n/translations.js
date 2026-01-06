@@ -288,6 +288,18 @@ Možda želiš i ti – Allah nam primio. 🌱
     
     // Language
     selectLanguage: "Odaberi jezik",
+    
+    // Push Notifications
+    pushTitle: "☀️ Daily 1",
+    pushBody: "Tvoje dobro djelo za danas te čeka!",
+    
+    // Review Prompt
+    reviewTitle: "Sviđa ti se Daily 1?",
+    reviewQuestion: "Pomaže li ti Daily 1 da budeš svjestan dobrih djela?",
+    reviewSubtext: "Kratka ocjena podržava ovaj besplatni projekat 🤍",
+    reviewButton: "Ocijeni aplikaciju",
+    reviewLater: "Kasnije",
+    reviewNever: "Ne pitaj više",
   }
 };
 
