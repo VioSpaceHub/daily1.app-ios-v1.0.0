@@ -301,6 +301,11 @@ Možda želiš i ti – Allah nam primio. 🌱
     pushTitle: "🌱 Daily 1",
     pushBody: "Tvoje dobro djelo za danas te čeka!",
     
+    // iOS specific notifications
+    iosNotificationsNote: "Molimo aktiviraj obavijesti u: Postavke → Daily 1 → Obavijesti",
+    iosPermissionDenied: "Potrebna dozvola",
+    iosPermissionDeniedDesc: "Molimo aktiviraj obavijesti u: Postavke → Daily 1 → Obavijesti",
+    
     // Review Prompt
     reviewTitle: "Sviđa ti se Daily 1?",
     reviewSubtext: "Kratka ocjena podržava ovaj besplatni projekat 🤍",
