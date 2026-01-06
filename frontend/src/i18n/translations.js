@@ -90,12 +90,11 @@ Vielleicht magst du sie auch tun – möge Allah es von uns annehmen. 🌱
     selectLanguage: "Sprache wählen",
     
     // Push Notifications
-    pushTitle: "☀️ Daily 1",
+    pushTitle: "🌱 Daily 1",
     pushBody: "Deine gute Tat für heute wartet auf dich!",
     
     // Review Prompt
     reviewTitle: "Gefällt dir Daily 1?",
-    reviewQuestion: "Hilft dir Daily 1 dabei, achtsam gute Taten zu tun?",
     reviewSubtext: "Eine kurze Bewertung unterstützt dieses kostenlose Projekt 🤍",
     reviewButton: "App bewerten",
     reviewLater: "Später",
