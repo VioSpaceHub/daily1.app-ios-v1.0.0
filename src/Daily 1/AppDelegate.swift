@@ -22,13 +22,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Notification delegate setzen
         UNUserNotificationCenter.current().delegate = self
 
-        // KEIN automatischer Permission-Dialog hier!
-        // Der Dialog wird erst gezeigt wenn der User den Button in der App klickt
+        // KEIN automatischer Permission-Dialog!
+        // Wird erst gezeigt wenn User auf Button klickt
 
         return true
     }
     
-    // Diese Funktion wird vom ViewController aufgerufen
+    // Wird vom ViewController aufgerufen
     func requestNotificationPermission(completion: @escaping (Bool) -> Void) {
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
         UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
@@ -45,7 +45,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let messageID = userInfo[gcmMessageIDKey] {
             print("Message ID 1: \(messageID)")
         }
-        print("push userInfo 1:", userInfo)
     }
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
@@ -53,7 +52,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let messageID = userInfo[gcmMessageIDKey] {
             print("Message ID 2: \(messageID)")
         }
-        print("push userInfo 2:", userInfo)
         completionHandler(UIBackgroundFetchResult.newData)
     }
 
@@ -73,25 +71,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        let userInfo = notification.request.content.userInfo
-
-        if let messageID = userInfo[gcmMessageIDKey] {
-            print("Message ID 3: \(messageID)")
-        }
-        print("push userInfo 3:", userInfo)
-
         completionHandler([[.banner, .list, .sound]])
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
-        let userInfo = response.notification.request.content.userInfo
-        if let messageID = userInfo[gcmMessageIDKey] {
-            print("Message ID 4: \(messageID)")
-        }
-        print("push userInfo 4:", userInfo)
-
         completionHandler()
     }
 }
@@ -100,8 +85,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         print("Firebase registration token: \(String(describing: fcmToken))")
-        
-        let dataDict: [String: String] = ["token": fcmToken ?? ""]
-        NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
+        NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: ["token": fcmToken ?? ""])
     }
 }
