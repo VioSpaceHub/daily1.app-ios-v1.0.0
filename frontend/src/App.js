@@ -275,7 +275,7 @@ function App() {
           await fetch(`${BACKEND_URL}/api/notifications/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token, platform: 'web' }),
+            body: JSON.stringify({ token, platform: 'web', language }),
           });
           
           localStorage.setItem('goodDeeds_fcmToken', token);
@@ -295,7 +295,7 @@ function App() {
           });
 
           try {
-            await fetch(`${BACKEND_URL}/api/notifications/send-test?token=${token}`, {
+            await fetch(`${BACKEND_URL}/api/notifications/send-test?token=${token}&language=${language}`, {
               method: 'POST',
             });
           } catch (e) {
@@ -316,6 +316,20 @@ function App() {
       }
     }
   };
+
+  // Update notification language when user changes language
+  const updateNotificationLanguage = useCallback(async (newLanguage) => {
+    const token = localStorage.getItem('goodDeeds_fcmToken');
+    if (token) {
+      try {
+        await fetch(`${BACKEND_URL}/api/notifications/language?token=${token}&language=${newLanguage}`, {
+          method: 'PUT',
+        });
+      } catch (error) {
+        console.log('Language update skipped');
+      }
+    }
+  }, [BACKEND_URL]);
 
   // Laden der gespeicherten Daten
   useEffect(() => {
