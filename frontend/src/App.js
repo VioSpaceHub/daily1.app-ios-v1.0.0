@@ -270,6 +270,18 @@ function App() {
       });
     } else {
       const token = await requestNotificationPermission();
+      
+      // Handle native iOS app case
+      if (token === 'ios-native-app') {
+        toast.success(t.notificationsEnabled, {
+          description: t.iosNotificationsNote || 'Bitte aktiviere Benachrichtigungen in den iPhone Einstellungen → Daily 1 → Mitteilungen',
+          duration: 6000,
+        });
+        setNotificationsEnabled(true);
+        localStorage.setItem('goodDeeds_fcmToken', 'ios-native');
+        return;
+      }
+      
       if (token) {
         try {
           await fetch(`${BACKEND_URL}/api/notifications/register`, {
@@ -309,10 +321,19 @@ function App() {
           });
         }
       } else {
-        toast.error(t.permissionDenied, {
-          description: t.permissionDeniedDesc,
-          duration: 4000,
-        });
+        // Check if this is iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (isIOS) {
+          toast.error(t.iosPermissionDenied || 'Berechtigung verweigert', {
+            description: t.iosPermissionDeniedDesc || 'Bitte aktiviere Mitteilungen in: Einstellungen → Daily 1 → Mitteilungen',
+            duration: 6000,
+          });
+        } else {
+          toast.error(t.permissionDenied, {
+            description: t.permissionDeniedDesc,
+            duration: 4000,
+          });
+        }
       }
     }
   };
