@@ -22,24 +22,31 @@ export const getFirebaseMessaging = () => {
   return getMessaging(app);
 };
 
-// Check if running as native iOS app (PWA installed or TestFlight)
+// Check if running as native iOS app (WKWebView wrapper from TestFlight/App Store)
 const isNativeIOSApp = () => {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const isStandalone = window.navigator.standalone === true;
-  const isIOSWebView = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent);
-  return isStandalone || isIOSWebView;
+  // WKWebView doesn't have Safari in UA string when embedded in native app
+  const isIOSWebView = isIOS && !navigator.userAgent.includes('Safari');
+  // Also check if running in a native wrapper (no serviceWorker or limited Notification API)
+  const hasLimitedWebFeatures = isIOS && (!('Notification' in window) || !('serviceWorker' in navigator));
+  
+  return isStandalone || isIOSWebView || hasLimitedWebFeatures;
 };
 
 // Request notification permission and get FCM token
 export const requestNotificationPermission = async () => {
   try {
-    // Check if Notification API is available
+    // Check if this is a native iOS app first
+    if (isNativeIOSApp()) {
+      console.log('Running as native iOS app - notifications handled by iOS natively');
+      // Native iOS apps handle push via APNs/Firebase SDK in Swift, not via web APIs
+      return 'ios-native-app';
+    }
+    
+    // Check if Notification API is available (web only)
     if (!('Notification' in window)) {
       console.log('Notifications not supported in this environment');
-      // For native iOS apps, notifications might be handled differently
-      if (isNativeIOSApp()) {
-        console.log('Running as native iOS app - notifications handled by iOS');
-        return 'ios-native-app';
-      }
       return null;
     }
 
@@ -65,9 +72,9 @@ export const requestNotificationPermission = async () => {
     return token;
   } catch (error) {
     console.error('Error getting notification permission:', error);
-    // Don't return null for native apps - they might handle notifications differently
+    // If error occurs on iOS, might be native app
     if (isNativeIOSApp()) {
-      console.log('Native iOS app detected - notification error might be expected');
+      console.log('Native iOS app detected - notification error expected');
       return 'ios-native-app';
     }
     return null;
