@@ -250,12 +250,30 @@ class FCMTokenRegister(BaseModel):
     token: str
     device_id: Optional[str] = None
     platform: Optional[str] = "web"
+    language: Optional[str] = "de"  # User's preferred language
 
 
 class NotificationSchedule(BaseModel):
     hour: int = 6  # Default: 06:00 Uhr
     minute: int = 0
     enabled: bool = True
+
+
+# Multilingual notification texts
+NOTIFICATION_TEXTS = {
+    "de": {
+        "title": "☀️ Daily 1",
+        "body": "Deine gute Tat für heute wartet auf dich!"
+    },
+    "en": {
+        "title": "☀️ Daily 1",
+        "body": "Your good deed for today is waiting for you!"
+    },
+    "bs": {
+        "title": "☀️ Daily 1",
+        "body": "Tvoje dobro djelo za danas te čeka!"
+    }
+}
 
 
 # Routes
