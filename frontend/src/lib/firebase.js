@@ -22,9 +22,33 @@ export const getFirebaseMessaging = () => {
   return getMessaging(app);
 };
 
+// Check if running as native iOS app (PWA installed or TestFlight)
+const isNativeIOSApp = () => {
+  const isStandalone = window.navigator.standalone === true;
+  const isIOSWebView = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent);
+  return isStandalone || isIOSWebView;
+};
+
 // Request notification permission and get FCM token
 export const requestNotificationPermission = async () => {
   try {
+    // Check if Notification API is available
+    if (!('Notification' in window)) {
+      console.log('Notifications not supported in this environment');
+      // For native iOS apps, notifications might be handled differently
+      if (isNativeIOSApp()) {
+        console.log('Running as native iOS app - notifications handled by iOS');
+        return 'ios-native-app';
+      }
+      return null;
+    }
+
+    // Check current permission status
+    if (Notification.permission === 'denied') {
+      console.log('Notifications were previously denied');
+      return null;
+    }
+
     const permission = await Notification.requestPermission();
     
     if (permission !== 'granted') {
@@ -41,6 +65,11 @@ export const requestNotificationPermission = async () => {
     return token;
   } catch (error) {
     console.error('Error getting notification permission:', error);
+    // Don't return null for native apps - they might handle notifications differently
+    if (isNativeIOSApp()) {
+      console.log('Native iOS app detected - notification error might be expected');
+      return 'ios-native-app';
+    }
     return null;
   }
 };
