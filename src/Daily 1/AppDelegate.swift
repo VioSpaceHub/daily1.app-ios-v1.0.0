@@ -2,7 +2,6 @@ import UIKit
 import FirebaseCore
 import FirebaseMessaging
 import UserNotifications
-import WebKit
 
 let gcmMessageIDKey = "gcm.message_id"
 
@@ -23,26 +22,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Notification delegate setzen
         UNUserNotificationCenter.current().delegate = self
 
-        // NICHT mehr automatisch nach Berechtigung fragen!
-        // Das macht jetzt die Web-App über den JavaScript-Bridge
-
-        // Für Remote Notifications registrieren (ohne Permission-Dialog)
-        application.registerForRemoteNotifications()
+        // KEIN automatischer Permission-Dialog hier!
+        // Der Dialog wird erst gezeigt wenn der User den Button in der App klickt
 
         return true
     }
     
-    // JavaScript Bridge: Web-App kann native Permission anfragen
-    func requestNotificationPermission() {
+    // Diese Funktion wird vom ViewController aufgerufen
+    func requestNotificationPermission(completion: @escaping (Bool) -> Void) {
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
         UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
-            if granted {
-                print("Notification permission granted")
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                if granted {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
-            } else {
-                print("Notification permission denied")
+                completion(granted)
             }
         }
     }
@@ -109,14 +103,5 @@ extension AppDelegate: MessagingDelegate {
         
         let dataDict: [String: String] = ["token": fcmToken ?? ""]
         NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
-    }
-}
-
-// MARK: - WKScriptMessageHandler für JavaScript Bridge
-extension AppDelegate: WKScriptMessageHandler {
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if message.name == "notificationPermission" {
-            requestNotificationPermission()
-        }
     }
 }
