@@ -1,6 +1,7 @@
 import UIKit
 import WebKit
 import FirebaseMessaging
+import UserNotifications
 
 var webView: WKWebView! = nil
 
