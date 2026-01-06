@@ -280,15 +280,15 @@ class NotificationSchedule(BaseModel):
 # Multilingual notification texts
 NOTIFICATION_TEXTS = {
     "de": {
-        "title": "☀️ Daily 1",
+        "title": "🌱 Daily 1",
         "body": "Deine gute Tat für heute wartet auf dich!"
     },
     "en": {
-        "title": "☀️ Daily 1",
+        "title": "🌱 Daily 1",
         "body": "Your good deed for today is waiting for you!"
     },
     "bs": {
-        "title": "☀️ Daily 1",
+        "title": "🌱 Daily 1",
         "body": "Tvoje dobro djelo za danas te čeka!"
     }
 }
