@@ -228,25 +228,6 @@ extension UIColor {
         return (brightness > threshold)
     }
 }
-
-extension ViewController: WKScriptMessageHandler {
-  func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if message.name == "print" {
-            printView(webView: Daily1.webView)
-        }
-        if message.name == "push-subscribe" {
-            handleSubscribeTouch(message: message)
-        }
-        if message.name == "push-permission-request" {
-            handlePushPermission()
-        }
-        if message.name == "push-permission-state" {
-            handlePushState()
-        }
-        if message.name == "push-token" {
-            handleFCMToken()
-        }
-  }
     // MARK: - Push Notification Handlers
 extension ViewController {
     
