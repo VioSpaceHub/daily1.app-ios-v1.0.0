@@ -443,7 +443,10 @@ function App() {
       description: t.deedSaved,
       duration: 3000,
     });
-  }, [completedDates, today, todayCompleted, isRamadanActive, t, BACKEND_URL]);
+
+    // Check if we should show review prompt
+    checkReviewPrompt(newCompleted.length);
+  }, [completedDates, today, todayCompleted, isRamadanActive, t, BACKEND_URL, checkReviewPrompt]);
 
   // Letzte 10 Tage generieren
   const getLast10Days = useCallback(() => {
