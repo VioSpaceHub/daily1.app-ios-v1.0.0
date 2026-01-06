@@ -294,6 +294,28 @@
     color: var(--text-secondary);
 }
 
+.prompt-btn.tertiary {
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    opacity: 0.7;
+}
+
+.prompt-btn.tertiary:hover {
+    opacity: 1;
+    color: var(--text-secondary);
+}
+
+/* ===== Review Prompt ===== */
+.review-prompt .review-subtext {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -0.5rem;
+    margin-bottom: 1.5rem;
+}
+
 /* ===== Ramadan Badge ===== */
 .ramadan-badge {
     display: inline-flex;
