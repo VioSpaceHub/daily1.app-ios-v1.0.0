@@ -1,0 +1,91 @@
+workflows:
+  ios-workflow:
+    name: iOS App Store Build
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    integrations:
+      app_store_connect: Daily1 API Key
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.daily1.app
+      vars:
+        BUNDLE_ID: "com.daily1.app"
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install CocoaPods
+        script: |
+          cd src
+          pod install
+      - name: Copy GoogleService-Info.plist
+        script: |
+          if [ -f "$CM_BUILD_DIR/src/GoogleService-Info.plist" ]; then
+            cp "$CM_BUILD_DIR/src/GoogleService-Info.plist" "$CM_BUILD_DIR/src/Daily 1/"
+            echo "GoogleService-Info.plist copied successfully"
+          else
+            echo "Warning: GoogleService-Info.plist not found"
+          fi
+      - name: Increment build number
+        script: |
+          cd src
+          BUILD_NUMBER=$(date +%Y%m%d%H%M)
+          echo "Setting build number to $BUILD_NUMBER"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "Daily 1/Info.plist"
+          cat "Daily 1/Info.plist" | grep -A1 CFBundleVersion
+      - name: Set up code signing
+        script: |
+          xcode-project use-profiles
+      - name: Build archive
+        script: |
+          cd src
+          xcodebuild -workspace "Daily 1.xcworkspace" \
+            -scheme "Daily 1" \
+            -configuration Release \
+            -archivePath "$CM_BUILD_DIR/build/Daily1.xcarchive" \
+            archive \
+            DEVELOPMENT_TEAM=2Z9U7T8Y64 \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            CODE_SIGN_STYLE=Manual \
+            PROVISIONING_PROFILE_SPECIFIER="Daily 1 Profile"
+      - name: Create ExportOptions
+        script: |
+          cat > "$CM_BUILD_DIR/ExportOptions.plist" << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store-connect</string>
+              <key>teamID</key>
+              <string>2Z9U7T8Y64</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.daily1.app</key>
+                  <string>Daily 1 Profile</string>
+              </dict>
+              <key>signingCertificate</key>
+              <string>Apple Distribution</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>uploadBitcode</key>
+              <false/>
+              <key>uploadSymbols</key>
+              <true/>
+          </dict>
+          </plist>
+          EOF
+      - name: Export IPA
+        script: |
+          xcodebuild -exportArchive \
+            -archivePath "$CM_BUILD_DIR/build/Daily1.xcarchive" \
+            -exportPath "$CM_BUILD_DIR/build/ios/ipa" \
+            -exportOptionsPlist "$CM_BUILD_DIR/ExportOptions.plist"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - build/*.xcarchive
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
