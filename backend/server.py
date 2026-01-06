@@ -35,12 +35,12 @@ scheduler = AsyncIOScheduler()
 
 # Daily notification job
 async def send_daily_notification_job():
-    """Send daily reminder notifications at 06:00."""
+    """Send daily reminder notifications at 06:00 in user's preferred language."""
     logger = logging.getLogger(__name__)
     logger.info("Starting daily notification job...")
     
     try:
-        # Get today's deed
+        # Get today's deed index
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         hash_value = 0
         for char in today:
@@ -49,40 +49,58 @@ async def send_daily_notification_job():
         index = abs(hash_value) % len(GOOD_DEEDS)
         deed = GOOD_DEEDS[index]
         
-        # Get all active tokens
+        # Get all active tokens grouped by language
         tokens_cursor = db.fcm_tokens.find({"active": True})
-        tokens = [doc["token"] async for doc in tokens_cursor]
+        tokens_by_lang = {"de": [], "en": [], "bs": []}
         
-        if not tokens:
-            logger.info("No active tokens for daily notification")
-            return
+        async for doc in tokens_cursor:
+            lang = doc.get("language", "de")
+            if lang not in tokens_by_lang:
+                lang = "de"  # Default fallback
+            tokens_by_lang[lang].append(doc["token"])
         
-        # Send to all tokens
-        message = messaging.MulticastMessage(
-            notification=messaging.Notification(
-                title="🌱 Deine gute Tat für heute",
-                body=deed["text"],
-            ),
-            data={
-                "type": "daily_reminder",
-                "deed_index": str(index),
-                "source": deed["source"]
-            },
-            tokens=tokens,
-        )
+        total_sent = 0
+        total_failed = 0
         
-        response = messaging.send_each_for_multicast(message)
-        logger.info(f"Daily notifications sent: {response.success_count} success, {response.failure_count} failed")
+        # Send notifications per language
+        for lang, tokens in tokens_by_lang.items():
+            if not tokens:
+                continue
+            
+            notification_text = NOTIFICATION_TEXTS.get(lang, NOTIFICATION_TEXTS["de"])
+            
+            message = messaging.MulticastMessage(
+                notification=messaging.Notification(
+                    title=notification_text["title"],
+                    body=notification_text["body"],
+                ),
+                data={
+                    "type": "daily_reminder",
+                    "deed_index": str(index),
+                    "source": deed["source"],
+                    "language": lang
+                },
+                tokens=tokens,
+            )
+            
+            response = messaging.send_each_for_multicast(message)
+            total_sent += response.success_count
+            total_failed += response.failure_count
+            
+            logger.info(f"Sent {lang} notifications: {response.success_count} success, {response.failure_count} failed")
+            
+            # Deactivate failed tokens
+            if response.failure_count > 0:
+                for idx, resp in enumerate(response.responses):
+                    if not resp.success:
+                        failed_token = tokens[idx]
+                        await db.fcm_tokens.update_one(
+                            {"token": failed_token},
+                            {"$set": {"active": False}}
+                        )
         
-        # Deactivate failed tokens
-        if response.failure_count > 0:
-            for idx, resp in enumerate(response.responses):
-                if not resp.success:
-                    failed_token = tokens[idx]
-                    await db.fcm_tokens.update_one(
-                        {"token": failed_token},
-                        {"$set": {"active": False}}
-                    )
+        logger.info(f"Daily notifications complete: {total_sent} sent, {total_failed} failed")
+        
     except Exception as e:
         logger.error(f"Error in daily notification job: {e}")
 
