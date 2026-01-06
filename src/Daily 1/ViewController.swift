@@ -1,5 +1,6 @@
 import UIKit
 import WebKit
+import FirebaseMessaging
 
 var webView: WKWebView! = nil
 
@@ -94,7 +95,6 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
         let toolbarView = UIToolbar(frame: CGRect(x: 0, y: 0, width: webviewView.frame.width, height: 0))
         toolbarView.sizeToFit()
         toolbarView.frame = CGRect(x: 0, y: 0, width: webviewView.frame.width, height: toolbarView.frame.height + statusBarHeight)
-//        toolbarView.autoresizingMask = [.flexibleTopMargin, .flexibleRightMargin, .flexibleWidth]
         
         let flex = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let close = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(loadRootUrl))
@@ -119,7 +119,6 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
     
     func initToolbarView() {
         toolbarView =  createToolbarView()
-        
         webviewView.addSubview(toolbarView)
     }
     
@@ -194,7 +193,7 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
         }
         else {
             UIView.animate(withDuration: 0.3, delay: 0, options: [], animations: {
-                self.connectionProblemView.alpha = 0 // Here you will get the animation you want
+                self.connectionProblemView.alpha = 0
             }, completion: { _ in
                 self.connectionProblemView.isHidden = true;
                 self.connectionProblemView.layer.removeAllAnimations();
@@ -207,29 +206,25 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
     }
 }
 
-extension UIColor {
-    // Check if the color is light or dark, as defined by the injected lightness threshold.
-    // Some people report that 0.7 is best. I suggest to find out for yourself.
-    // A nil value is returned if the lightness couldn't be determined.
-    func isLight(threshold: Float = 0.5) -> Bool? {
-        let originalCGColor = self.cgColor
-
-        // Now we need to convert it to the RGB colorspace. UIColor.white / UIColor.black are greyscale and not RGB.
-        // If you don't do this then you will crash when accessing components index 2 below when evaluating greyscale colors.
-        let RGBCGColor = originalCGColor.converted(to: CGColorSpaceCreateDeviceRGB(), intent: .defaultIntent, options: nil)
-        guard let components = RGBCGColor?.components else {
-            return nil
+// MARK: - Push Notification Message Handlers
+extension ViewController: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if message.name == "print" {
+            printView(webView: Daily1.webView)
         }
-        guard components.count >= 3 else {
-            return nil
+        if message.name == "push-subscribe" {
+            handlePushPermission()
         }
-
-        let brightness = Float(((components[0] * 299) + (components[1] * 587) + (components[2] * 114)) / 1000)
-        return (brightness > threshold)
+        if message.name == "push-permission-request" {
+            handlePushPermission()
+        }
+        if message.name == "push-permission-state" {
+            handlePushState()
+        }
+        if message.name == "push-token" {
+            handleFCMToken()
+        }
     }
-}
-    // MARK: - Push Notification Handlers
-extension ViewController {
     
     func handlePushPermission() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
@@ -237,6 +232,11 @@ extension ViewController {
         appDelegate.requestNotificationPermission { granted in
             let script = "window.postMessage({type: 'push-permission-result', granted: \(granted)}, '*');"
             Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
+            
+            // Wenn erlaubt, auch gleich den Token senden
+            if granted {
+                self.handleFCMToken()
+            }
         }
     }
     
@@ -267,15 +267,22 @@ extension ViewController {
                     let script = "window.postMessage({type: 'fcm-token', token: '\(token)'}, '*');"
                     Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
                 } else {
-                    let script = "window.postMessage({type: 'fcm-token', token: null, error: '\(error?.localizedDescription ?? "Unknown error")'}, '*');"
+                    let errorMsg = error?.localizedDescription ?? "Unknown error"
+                    let script = "window.postMessage({type: 'fcm-token', token: null, error: '\(errorMsg)'}, '*');"
                     Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
                 }
             }
         }
     }
-    
-    func handleSubscribeTouch(message: WKScriptMessage) {
-        handlePushPermission()
-    }
 }
+
+extension UIColor {
+    func isLight(threshold: Float = 0.5) -> Bool? {
+        let originalCGColor = self.cgColor
+        let RGBCGColor = originalCGColor.converted(to: CGColorSpaceCreateDeviceRGB(), intent: .defaultIntent, options: nil)
+        guard let components = RGBCGColor?.components else { return nil }
+        guard components.count >= 3 else { return nil }
+        let brightness = Float(((components[0] * 299) + (components[1] * 587) + (components[2] * 114)) / 1000)
+        return (brightness > threshold)
+    }
 }
