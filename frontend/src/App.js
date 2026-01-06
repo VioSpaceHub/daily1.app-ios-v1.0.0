@@ -120,9 +120,13 @@ function App() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [fcmToken, setFcmToken] = useState(null);
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
+  const [showReviewPrompt, setShowReviewPrompt] = useState(false);
   const [language, setLanguage] = useState('de');
 
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  
+  // App Store URL (Placeholder until app is published)
+  const APP_STORE_URL = "https://apps.apple.com/app/daily1"; // Placeholder
 
   // Get translations for current language
   const t = translations[language];
