@@ -386,9 +386,9 @@ async def get_completed_deeds(token: str):
 
 @api_router.post("/notifications/register")
 async def register_fcm_token(data: FCMTokenRegister):
-    """Register FCM token for push notifications."""
+    """Register FCM token for push notifications with language preference."""
     try:
-        # Store token in MongoDB
+        # Store token in MongoDB with language preference
         await db.fcm_tokens.update_one(
             {"token": data.token},
             {
@@ -396,6 +396,7 @@ async def register_fcm_token(data: FCMTokenRegister):
                     "token": data.token,
                     "device_id": data.device_id,
                     "platform": data.platform,
+                    "language": data.language or "de",
                     "updated_at": datetime.now(timezone.utc).isoformat(),
                     "active": True
                 }
@@ -405,6 +406,23 @@ async def register_fcm_token(data: FCMTokenRegister):
         return {"success": True, "message": "Token registered successfully"}
     except Exception as e:
         logger.error(f"Error registering FCM token: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.put("/notifications/language")
+async def update_notification_language(token: str, language: str):
+    """Update the language preference for notifications."""
+    try:
+        if language not in ["de", "en", "bs"]:
+            language = "de"
+        
+        await db.fcm_tokens.update_one(
+            {"token": token},
+            {"$set": {"language": language}}
+        )
+        return {"success": True, "message": f"Language updated to {language}"}
+    except Exception as e:
+        logger.error(f"Error updating language: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -423,9 +441,14 @@ async def unregister_fcm_token(token: str):
 
 
 @api_router.post("/notifications/send-test")
-async def send_test_notification(token: str):
-    """Send a test notification to a specific device."""
+async def send_test_notification(token: str, language: str = "de"):
+    """Send a test notification to a specific device in their preferred language."""
     try:
+        # Get notification text in user's language
+        if language not in NOTIFICATION_TEXTS:
+            language = "de"
+        notification_text = NOTIFICATION_TEXTS[language]
+        
         # Get today's deed
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         hash_value = 0
@@ -437,13 +460,14 @@ async def send_test_notification(token: str):
         
         message = messaging.Message(
             notification=messaging.Notification(
-                title="🌱 Deine gute Tat für heute",
-                body=deed["text"],
+                title=notification_text["title"],
+                body=notification_text["body"],
             ),
             data={
                 "type": "daily_reminder",
                 "deed_index": str(index),
-                "source": deed["source"]
+                "source": deed["source"],
+                "language": language
             },
             token=token,
         )
