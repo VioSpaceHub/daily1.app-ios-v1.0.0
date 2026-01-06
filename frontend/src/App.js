@@ -600,9 +600,8 @@ function App() {
           {showReviewPrompt && (
             <div className="notification-prompt-overlay" data-testid="review-prompt-overlay">
               <div className="notification-prompt review-prompt">
-                <div className="prompt-icon">⭐</div>
+                <div className="review-stars">⭐⭐⭐⭐⭐</div>
                 <h3>{t.reviewTitle}</h3>
-                <p>{t.reviewQuestion}</p>
                 <p className="review-subtext">{t.reviewSubtext}</p>
                 <div className="prompt-buttons">
                   <button className="prompt-btn primary" onClick={handleReviewClick} data-testid="review-accept">
