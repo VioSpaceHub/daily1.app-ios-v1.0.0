@@ -247,4 +247,54 @@ extension ViewController: WKScriptMessageHandler {
             handleFCMToken()
         }
   }
+    // MARK: - Push Notification Handlers
+extension ViewController {
+    
+    func handlePushPermission() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        
+        appDelegate.requestNotificationPermission { granted in
+            let script = "window.postMessage({type: 'push-permission-result', granted: \(granted)}, '*');"
+            Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
+        }
+    }
+    
+    func handlePushState() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                let state: String
+                switch settings.authorizationStatus {
+                case .authorized, .provisional, .ephemeral:
+                    state = "granted"
+                case .denied:
+                    state = "denied"
+                case .notDetermined:
+                    state = "prompt"
+                @unknown default:
+                    state = "prompt"
+                }
+                let script = "window.postMessage({type: 'push-permission-state', state: '\(state)'}, '*');"
+                Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
+            }
+        }
+    }
+    
+    func handleFCMToken() {
+        Messaging.messaging().token { token, error in
+            DispatchQueue.main.async {
+                if let token = token {
+                    let script = "window.postMessage({type: 'fcm-token', token: '\(token)'}, '*');"
+                    Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
+                } else {
+                    let script = "window.postMessage({type: 'fcm-token', token: null, error: '\(error?.localizedDescription ?? "Unknown error")'}, '*');"
+                    Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
+                }
+            }
+        }
+    }
+    
+    func handleSubscribeTouch(message: WKScriptMessage) {
+        handlePushPermission()
+    }
+}
 }
