@@ -596,6 +596,29 @@ function App() {
             </div>
           )}
 
+          {/* Review Prompt Modal */}
+          {showReviewPrompt && (
+            <div className="notification-prompt-overlay" data-testid="review-prompt-overlay">
+              <div className="notification-prompt review-prompt">
+                <div className="prompt-icon">⭐</div>
+                <h3>{t.reviewTitle}</h3>
+                <p>{t.reviewQuestion}</p>
+                <p className="review-subtext">{t.reviewSubtext}</p>
+                <div className="prompt-buttons">
+                  <button className="prompt-btn primary" onClick={handleReviewClick} data-testid="review-accept">
+                    {t.reviewButton}
+                  </button>
+                  <button className="prompt-btn secondary" onClick={handleReviewLater} data-testid="review-later">
+                    {t.reviewLater}
+                  </button>
+                  <button className="prompt-btn tertiary" onClick={handleReviewNever} data-testid="review-never">
+                    {t.reviewNever}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Header mit Logo und Sprachauswahl */}
           <div className="header-row">
             <div className={`logo-text ${isRamadanActive ? 'ramadan-logo' : ''}`} data-testid="app-logo">
