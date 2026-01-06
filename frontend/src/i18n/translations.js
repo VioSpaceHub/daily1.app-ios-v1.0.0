@@ -197,6 +197,11 @@ Maybe you'd like to do it too – may Allah accept it from us. 🌱
     pushTitle: "🌱 Daily 1",
     pushBody: "Your good deed for today is waiting for you!",
     
+    // iOS specific notifications
+    iosNotificationsNote: "Please enable notifications in: Settings → Daily 1 → Notifications",
+    iosPermissionDenied: "Permission required",
+    iosPermissionDeniedDesc: "Please enable notifications in: Settings → Daily 1 → Notifications",
+    
     // Review Prompt
     reviewTitle: "Do you like Daily 1?",
     reviewSubtext: "A short review supports this free project 🤍",
