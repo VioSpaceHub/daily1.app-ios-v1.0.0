@@ -189,12 +189,11 @@ Maybe you'd like to do it too – may Allah accept it from us. 🌱
     selectLanguage: "Select language",
     
     // Push Notifications
-    pushTitle: "☀️ Daily 1",
+    pushTitle: "🌱 Daily 1",
     pushBody: "Your good deed for today is waiting for you!",
     
     // Review Prompt
     reviewTitle: "Do you like Daily 1?",
-    reviewQuestion: "Does Daily 1 help you stay mindful of good deeds?",
     reviewSubtext: "A short review supports this free project 🤍",
     reviewButton: "Rate App",
     reviewLater: "Later",
