@@ -22,16 +22,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Notification delegate setzen
         UNUserNotificationCenter.current().delegate = self
 
-        // Push Berechtigung anfragen
-        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-        UNUserNotificationCenter.current().requestAuthorization(
-            options: authOptions,
-            completionHandler: { _, _ in })
-
-        // Für Remote Notifications registrieren
-        application.registerForRemoteNotifications()
+        // KEIN automatischer Permission-Dialog beim Start
+        // Wird erst gezeigt wenn User auf Button klickt
 
         return true
+    }
+    
+    // Diese Funktion wird vom ViewController aufgerufen
+    func requestNotificationPermission(completion: @escaping (Bool) -> Void) {
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
+            DispatchQueue.main.async {
+                if granted {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+                completion(granted)
+            }
+        }
     }
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
