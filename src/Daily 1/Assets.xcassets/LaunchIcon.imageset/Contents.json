@@ -1,39 +1,18 @@
 {
-  "images" : [
-    {
-      "compression-type" : "automatic",
-      "filename" : "launch-64.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "compression-type" : "automatic",
-      "filename" : "launch-128.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "compression-type" : "automatic",
-      "filename" : "launch-192.png",
-      "idiom" : "universal",
-      "scale" : "3x"
-    },
-    {
-      "filename" : "launch-256.png",
-      "idiom" : "universal",
-      "scale" : "4x"
-    },
-    {
-      "filename" : "launch-512.png",
-      "idiom" : "universal",
-      "scale" : "8x"
-    }
+  "images": [
+    {"filename": "LaunchImage-750x1334.png", "idiom": "iphone", "scale": "2x"},
+    {"filename": "LaunchImage-1242x2208.png", "idiom": "iphone", "scale": "3x"},
+    {"filename": "LaunchImage-1125x2436.png", "idiom": "iphone", "scale": "3x"},
+    {"filename": "LaunchImage-828x1792.png", "idiom": "iphone", "scale": "2x"},
+    {"filename": "LaunchImage-1242x2688.png", "idiom": "iphone", "scale": "3x"},
+    {"filename": "LaunchImage-1170x2532.png", "idiom": "iphone", "scale": "3x"},
+    {"filename": "LaunchImage-1179x2556.png", "idiom": "iphone", "scale": "3x"},
+    {"filename": "LaunchImage-1284x2778.png", "idiom": "iphone", "scale": "3x"},
+    {"filename": "LaunchImage-1290x2796.png", "idiom": "iphone", "scale": "3x"},
+    {"filename": "LaunchImage-1536x2048.png", "idiom": "ipad", "scale": "2x"},
+    {"filename": "LaunchImage-1668x2224.png", "idiom": "ipad", "scale": "2x"},
+    {"filename": "LaunchImage-1668x2388.png", "idiom": "ipad", "scale": "2x"},
+    {"filename": "LaunchImage-2048x2732.png", "idiom": "ipad", "scale": "2x"}
   ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
-  },
-  "properties" : {
-    "compression-type" : "automatic"
-  }
+  "info": {"version": 1, "author": "xcode"}
 }
