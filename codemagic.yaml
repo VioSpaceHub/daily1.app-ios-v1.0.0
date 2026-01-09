@@ -11,6 +11,7 @@ workflows:
         bundle_identifier: com.daily1.app
       vars:
         BUNDLE_ID: "com.daily1.app"
+        MARKETING_VERSION: "1.1"
       xcode: latest
       cocoapods: default
     scripts:
@@ -26,13 +27,13 @@ workflows:
           else
             echo "Warning: GoogleService-Info.plist not found"
           fi
-      - name: Increment build number
+      - name: Set version and build number
         script: |
           cd src
           BUILD_NUMBER=$(date +%Y%m%d%H%M)
-          echo "Setting build number to $BUILD_NUMBER"
+          echo "Setting version to $MARKETING_VERSION and build number to $BUILD_NUMBER"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $MARKETING_VERSION" "Daily 1/Info.plist"
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "Daily 1/Info.plist"
-          cat "Daily 1/Info.plist" | grep -A1 CFBundleVersion
       - name: Set up code signing
         script: |
           xcode-project use-profiles
