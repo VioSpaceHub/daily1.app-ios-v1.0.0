@@ -41,6 +41,13 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
     
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification , object: nil)
         
+        // Listen for FCM token updates
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didReceiveFCMToken(_:)),
+            name: Notification.Name("FCMToken"),
+            object: nil
+        )
     }
 
     override func viewDidLayoutSubviews() {
@@ -183,7 +190,6 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
         self.progressView.setProgress(progress, animated: animated);
     }
     
-    
     func animateConnectionProblem(_ show: Bool) {
         if (show) {
             self.connectionProblemView.isHidden = false;
@@ -204,6 +210,7 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
         
     deinit {
         Daily1.webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -227,6 +234,16 @@ extension ViewController: WKScriptMessageHandler {
         }
     }
     
+    @objc func didReceiveFCMToken(_ notification: Notification) {
+        if let token = notification.userInfo?["token"] as? String, !token.isEmpty {
+            DispatchQueue.main.async {
+                let script = "window.postMessage({type: 'fcm-token', token: '\(token)'}, '*');"
+                Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
+                print("FCM Token sent via notification: \(token.prefix(20))...")
+            }
+        }
+    }
+    
     func handlePushPermission() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         
@@ -234,9 +251,33 @@ extension ViewController: WKScriptMessageHandler {
             let script = "window.postMessage({type: 'push-permission-result', granted: \(granted)}, '*');"
             Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
             
-            // Wenn erlaubt, auch gleich den Token senden
             if granted {
-                self.handleFCMToken()
+                self.handleFCMTokenWithRetry(retryCount: 0)
+            }
+        }
+    }
+    
+    func handleFCMTokenWithRetry(retryCount: Int) {
+        let maxRetries = 5
+        
+        Messaging.messaging().token { token, error in
+            DispatchQueue.main.async {
+                if let token = token {
+                    let script = "window.postMessage({type: 'fcm-token', token: '\(token)'}, '*');"
+                    Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
+                    print("FCM Token sent: \(token.prefix(20))...")
+                } else {
+                    print("FCM Token not ready, attempt \(retryCount + 1)/\(maxRetries)")
+                    if retryCount < maxRetries {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                            self.handleFCMTokenWithRetry(retryCount: retryCount + 1)
+                        }
+                    } else {
+                        let errorMsg = error?.localizedDescription ?? "Token unavailable"
+                        let script = "window.postMessage({type: 'fcm-token', token: null, error: '\(errorMsg)'}, '*');"
+                        Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
+                    }
+                }
             }
         }
     }
@@ -262,18 +303,7 @@ extension ViewController: WKScriptMessageHandler {
     }
     
     func handleFCMToken() {
-        Messaging.messaging().token { token, error in
-            DispatchQueue.main.async {
-                if let token = token {
-                    let script = "window.postMessage({type: 'fcm-token', token: '\(token)'}, '*');"
-                    Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
-                } else {
-                    let errorMsg = error?.localizedDescription ?? "Unknown error"
-                    let script = "window.postMessage({type: 'fcm-token', token: null, error: '\(errorMsg)'}, '*');"
-                    Daily1.webView.evaluateJavaScript(script, completionHandler: nil)
-                }
-            }
-        }
+        handleFCMTokenWithRetry(retryCount: 0)
     }
 }
 
