@@ -18,6 +18,10 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
     @IBOutlet weak var webviewView: UIView!
     var toolbarView: UIToolbar!
     
+    // Splash Screen
+    var splashView: UIView?
+    var splashLogoView: UIImageView?
+    
     var htmlIsLoaded = false;
     
     private var themeObservation: NSKeyValueObservation?
@@ -35,6 +39,10 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Setup splash screen FIRST (before anything else)
+        setupSplashScreen()
+        
         initWebView()
         initToolbarView()
         loadRootUrl()
@@ -53,6 +61,66 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         Daily1.webView.frame = calcWebviewFrame(webviewView: webviewView, toolbarView: nil)
+        
+        // Keep splash on top
+        if let splash = splashView {
+            splash.frame = view.bounds
+            view.bringSubviewToFront(splash)
+        }
+    }
+    
+    // MARK: - Splash Screen
+    func setupSplashScreen() {
+        let splash = UIView(frame: view.bounds)
+        splash.backgroundColor = .black
+        splash.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        // Add logo
+        let logoImageView = UIImageView(image: UIImage(named: "LaunchIcon"))
+        logoImageView.contentMode = .scaleAspectFit
+        logoImageView.translatesAutoresizingMaskIntoConstraints = false
+        splash.addSubview(logoImageView)
+        
+        NSLayoutConstraint.activate([
+            logoImageView.centerXAnchor.constraint(equalTo: splash.centerXAnchor),
+            logoImageView.centerYAnchor.constraint(equalTo: splash.centerYAnchor),
+            logoImageView.widthAnchor.constraint(equalToConstant: 150),
+            logoImageView.heightAnchor.constraint(equalToConstant: 150)
+        ])
+        
+        // Start pulse animation
+        startPulseAnimation(on: logoImageView)
+        
+        view.addSubview(splash)
+        splashView = splash
+        splashLogoView = logoImageView
+    }
+    
+    func startPulseAnimation(on imageView: UIImageView) {
+        let pulse = CABasicAnimation(keyPath: "transform.scale")
+        pulse.duration = 0.8
+        pulse.fromValue = 0.95
+        pulse.toValue = 1.08
+        pulse.autoreverses = true
+        pulse.repeatCount = .infinity
+        pulse.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        imageView.layer.add(pulse, forKey: "pulse")
+    }
+    
+    func hideSplashScreen() {
+        guard let splash = splashView else { return }
+        
+        // Stop animation
+        splashLogoView?.layer.removeAllAnimations()
+        
+        // Fade out
+        UIView.animate(withDuration: 0.4, delay: 0.1, options: .curveEaseOut, animations: {
+            splash.alpha = 0
+        }) { _ in
+            splash.removeFromSuperview()
+            self.splashView = nil
+            self.splashLogoView = nil
+        }
     }
     
     @objc func keyboardWillHide(_ notification: NSNotification) {
@@ -147,6 +215,9 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
             self.setProgress(0.0, false)
             
             self.overrideUIStyle()
+            
+            // Hide splash screen when content is ready
+            self.hideSplashScreen()
         }
     }
     
