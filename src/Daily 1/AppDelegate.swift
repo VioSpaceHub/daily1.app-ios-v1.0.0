@@ -28,6 +28,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
+    // Clear badge when app becomes active
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        application.applicationIconBadgeNumber = 0
+    }
+    
     // Diese Funktion wird vom ViewController aufgerufen
     func requestNotificationPermission(completion: @escaping (Bool) -> Void) {
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -91,6 +96,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             print("Message ID 4: \(messageID)")
         }
         print("push userInfo 4:", userInfo)
+        
+        // Clear badge when user taps on notification
+        UIApplication.shared.applicationIconBadgeNumber = 0
 
         completionHandler()
     }
