@@ -1,19 +1,81 @@
 {
   "images" : [
     {
-      "filename" : "LaunchImage-1668x2388.png",
-      "idiom" : "universal",
-      "scale" : "1x"
+      "filename" : "LaunchImage-750x1334.png",
+      "idiom" : "iphone",
+      "scale" : "2x",
+      "subtype" : "667h"
     },
     {
-      "filename" : "LaunchImage-1668x2388.png",
-      "idiom" : "universal",
+      "filename" : "LaunchImage-1242x2208.png",
+      "idiom" : "iphone",
+      "scale" : "3x",
+      "subtype" : "736h"
+    },
+    {
+      "filename" : "LaunchImage-1125x2436.png",
+      "idiom" : "iphone",
+      "scale" : "3x",
+      "subtype" : "2436h"
+    },
+    {
+      "filename" : "LaunchImage-828x1792.png",
+      "idiom" : "iphone",
+      "scale" : "2x",
+      "subtype" : "1792h"
+    },
+    {
+      "filename" : "LaunchImage-1242x2688.png",
+      "idiom" : "iphone",
+      "scale" : "3x",
+      "subtype" : "2688h"
+    },
+    {
+      "filename" : "LaunchImage-1170x2532.png",
+      "idiom" : "iphone",
+      "scale" : "3x",
+      "subtype" : "2532h"
+    },
+    {
+      "filename" : "LaunchImage-1284x2778.png",
+      "idiom" : "iphone",
+      "scale" : "3x",
+      "subtype" : "2778h"
+    },
+    {
+      "filename" : "LaunchImage-1179x2556.png",
+      "idiom" : "iphone",
+      "scale" : "3x",
+      "subtype" : "2556h"
+    },
+    {
+      "filename" : "LaunchImage-1290x2796.png",
+      "idiom" : "iphone",
+      "scale" : "3x",
+      "subtype" : "2796h"
+    },
+    {
+      "filename" : "LaunchImage-1536x2048.png",
+      "idiom" : "ipad",
       "scale" : "2x"
     },
     {
+      "filename" : "LaunchImage-1668x2224.png",
+      "idiom" : "ipad",
+      "scale" : "2x",
+      "subtype" : "2224h"
+    },
+    {
       "filename" : "LaunchImage-1668x2388.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "idiom" : "ipad",
+      "scale" : "2x",
+      "subtype" : "2388h"
+    },
+    {
+      "filename" : "LaunchImage-2048x2732.png",
+      "idiom" : "ipad",
+      "scale" : "2x",
+      "subtype" : "2732h"
     }
   ],
   "info" : {
